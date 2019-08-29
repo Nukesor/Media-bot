@@ -16,7 +16,6 @@ def download_media(url):
     if not url.endswith('.json'):
         url += '.json'
     info = {'json_url': url}
-    print(url)
     # Get the json information from reddit
     request = Request(url, headers=headers)
     response = urlopen(request)
@@ -91,7 +90,6 @@ def get_media(info):
 
 def get_youtube_dl_media(info):
     """Try to download a clip via youtube-dl."""
-    print('Trying yd')
     options = {
         'outtmpl': f'/tmp/%(title)s.%(ext)s',
         'quiet': True,

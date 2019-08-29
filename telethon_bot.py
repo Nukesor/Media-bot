@@ -14,15 +14,17 @@ bot = TelegramClient('reddit_media_bot', config['telegram']['app_api_id'], confi
 async def replace_media_link(event):
     """Set query attributes."""
     try:
+        me = await bot.get_me()
+        if event.message.from_id != me.id:
+            return
+
         url = event.message.message
         info, media = download_media(url)
         if info is None:
             return
 
-        print('Upload')
         file_handle = await bot.upload_file(media, file_name=info['file_name'])
 
-        print('Send')
         await bot.send_file(event.message.to_id,
                             file=file_handle,
                             caption=info['title'],
