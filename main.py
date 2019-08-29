@@ -23,12 +23,15 @@ async def replace_media_link(event):
         if info is None:
             return
 
+        print(f"Uploading: {info['title']}")
         file_handle = await bot.upload_file(media, file_name=info['file_name'])
 
+        print("Sending")
         await bot.send_file(event.message.to_id,
                             file=file_handle,
                             caption=info['title'],
                             )
+        print("Deleting old message")
         await event.message.delete()
     except Exception as e:
         pass

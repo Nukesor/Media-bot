@@ -25,6 +25,7 @@ def download_media(url):
     # Extract the media information from the payload
     info = get_media_info(payload, info)
 
+    pprint.pprint(info)
     # Check if we got some kind of info
     if info is None:
         return None, None
@@ -58,7 +59,7 @@ def get_media_info(payload, info):
         return info
 
     # Normal reddit hosted videos
-    elif data['post_hint'] == 'hosted:video' and data['domain']:
+    elif data['post_hint'] == 'hosted:video':
         video_data = data['media']['reddit_video']
         info['url'] = video_data['fallback_url']
         info['type'] = 'video'
@@ -66,9 +67,14 @@ def get_media_info(payload, info):
         info['file_name'] = data['title'] + '.mp4'
         return info
 
-#    # External videos
-#    elif data['post_hint'] == 'rich:video' and 'secure_media_embed' in data:
-#        return {'url': data['secure_media_embed']['media_domain_url'], 'type': 'video'}
+    # External videos
+    elif data['post_hint'] == 'rich:video' and data['domain'] == 'gfycat.com':
+        url = data['secure_media']['oembed']['thumbnail_url']
+        url = url.replace('size_restricted.gif', 'mobile.mp4')
+        info['url'] = url
+        info['type'] = 'video'
+        info['file_name'] = data['title'] + '.mp4'
+        return info
 
     # Youtube video
     elif data['post_hint'] == 'rich:video' and data['domain'] == 'youtu.be':
@@ -81,6 +87,7 @@ def get_media_info(payload, info):
 
 def get_media(info):
     """Get the actual file by the given info.."""
+    print(f"Downloading media directly: {info['url']}")
     if info['type'] in ['image', 'video']:
         request = Request(info['url'], headers=headers)
         response = urlopen(request)
@@ -98,18 +105,19 @@ def get_youtube_dl_media(info):
     try:
         ydl = youtube_dl.YoutubeDL(options)
         yd_info = ydl.extract_info(info['url'])
+
+        # Compile file path
+        path = f"/tmp/{yd_info['title']}.{yd_info['ext']}"
+
+        with open(path, 'rb') as file:
+            media = file.read()
+
+        os.remove(path)
+
+        info['youtube_dl'] = True
+        return info, media
+
     except Exception as e:
         print('Failed using yd')
         print(e)
         return info, None
-
-    # Compile file path
-    path = f"/tmp/{yd_info['title']}.{yd_info['ext']}"
-
-    with open(path, 'rb') as file:
-        media = file.read()
-
-    os.remove(path)
-
-    info['youtube_dl'] = True
-    return info, media
