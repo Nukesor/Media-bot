@@ -22,6 +22,7 @@ def download_media(url):
     data = response.read().decode("utf-8")
     payload = json.loads(data)
 
+    print('Getting media')
     # Extract the media information from the payload
     info = get_media_info(payload, info)
 
@@ -52,14 +53,14 @@ def get_media_info(payload, info):
     info['title'] = data['title']
 
     # Reddit hosted images
-    if data['post_hint'] == 'image':
+    if data.get('post_hint', False) or data['domain'] == 'i.redd.it':
         info['url'] = data['url']
         info['type'] = 'image'
         info['file_name'] = data['title']
         return info
 
     # Normal reddit hosted videos
-    elif data['post_hint'] == 'hosted:video':
+    elif data.get('post_hint') == 'hosted:video':
         video_data = data['media']['reddit_video']
         info['url'] = video_data['fallback_url']
         info['type'] = 'video'
@@ -69,7 +70,7 @@ def get_media_info(payload, info):
         return info
 
     # External videos
-    elif data['post_hint'] == 'rich:video' and data['domain'] == 'gfycat.com':
+    elif data.get('post_hint') == 'rich:video' and data['domain'] == 'gfycat.com':
         url = data['secure_media']['oembed']['thumbnail_url']
         url = url.replace('size_restricted.gif', 'mobile.mp4')
         info['url'] = url
@@ -78,7 +79,7 @@ def get_media_info(payload, info):
         return info
 
     # Youtube video
-    elif data['post_hint'] == 'rich:video' and data['domain'] == 'youtu.be':
+    elif data.get('post_hint') == 'rich:video' and data['domain'] == 'youtu.be':
         info['url'] = data['url']
         info['type'] = 'video'
         info['file_name'] = 'video.mp4'
@@ -86,7 +87,7 @@ def get_media_info(payload, info):
         return info
 
     # Imgur
-    elif data['post_hint'] == 'link' and data['domain'] == 'i.imgur.com':
+    elif data.get('post_hint') == 'link' and data['domain'] == 'i.imgur.com':
         info['youtube_dl'] = False
         # Gifvs
         if data['url'].endswith('.gifv') or data['url'].endswith('.gif'):

@@ -24,7 +24,7 @@ async def replace_media_link(event):
             return
 
         print(f"Uploading: {info['title']}, {info['file_name']}")
-        file_handle = await bot.upload_file(media, file_name='video.mp4')
+        file_handle = await bot.upload_file(media, file_name=info['file_name'])
 
         print("Sending")
         await bot.send_file(event.message.to_id,
