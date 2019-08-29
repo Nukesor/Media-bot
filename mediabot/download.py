@@ -6,7 +6,6 @@ from urllib.request import urlopen, Request
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0',
-
 }
 
 
@@ -55,7 +54,10 @@ def get_media_info(payload, info):
     if data['domain'] == 'i.redd.it':
         info['url'] = data['url']
         info['type'] = 'image'
-        info['file_name'] = data['title']
+        if info['url'].endswith('.jpg'):
+            info['file_name'] = data['title'] + '.jpg'
+        elif info['url'].endswith('.png'):
+            info['file_name'] = data['title'] + '.png'
         return info
 
     # Normal reddit hosted videos
@@ -98,10 +100,14 @@ def get_media_info(payload, info):
             info['file_name'] = 'video.mp4'
 
         # Images
-        elif data['url'].endswith('.png') or data['url'].endswith('.jpg'):
+        elif data['url'].endswith('.png'):
             info['url'] = data['url']
             info['type'] = 'image'
-            info['file_name'] = info['title']
+            info['file_name'] = info['title'] + '.png'
+        elif data['url'].endswith('.jpg'):
+            info['url'] = data['url']
+            info['type'] = 'image'
+            info['file_name'] = info['title'] + '.jpg'
 
         return info
 
