@@ -32,7 +32,7 @@ def download_media(url):
 
     # Try to download the media using youtube-dl
     # Videos with sound or youtube videos can be eaily downloaded with youtube-dl
-    if info['type'] == 'video':
+    if info['type'] == 'video' and info.get('youtube_dl', False):
         info, media = get_youtube_dl_media(info)
         if media is not None:
             return info, media
@@ -64,7 +64,8 @@ def get_media_info(payload, info):
         info['url'] = video_data['fallback_url']
         info['type'] = 'video'
         info['filename'] = 'image'
-        info['file_name'] = data['title'] + '.mp4'
+        info['file_name'] = 'video.mp4'
+        info['youtube_dl'] = True
         return info
 
     # External videos
@@ -73,13 +74,34 @@ def get_media_info(payload, info):
         url = url.replace('size_restricted.gif', 'mobile.mp4')
         info['url'] = url
         info['type'] = 'video'
-        info['file_name'] = data['title'] + '.mp4'
+        info['file_name'] = 'video.mp4'
         return info
 
     # Youtube video
     elif data['post_hint'] == 'rich:video' and data['domain'] == 'youtu.be':
         info['url'] = data['url']
         info['type'] = 'video'
+        info['file_name'] = 'video.mp4'
+        info['youtube_dl'] = True
+        return info
+
+    # Imgur
+    elif data['post_hint'] == 'link' and data['domain'] == 'i.imgur.com':
+        info['youtube_dl'] = False
+        # Gifvs
+        if data['url'].endswith('.gifv') or data['url'].endswith('.gif'):
+            url = data['preview']['images'][0]['variants']['mp4']['source']['url']
+            url = url.replace('amp;', '')
+            info['url'] = url
+            info['type'] = 'gif'
+            info['file_name'] = 'video.mp4'
+
+        # Images
+        elif data['url'].endswith('.png') or data['url'].endswith('.jpg'):
+            info['url'] = data['url']
+            info['type'] = 'image'
+            info['file_name'] = info['title']
+
         return info
 
     return None
@@ -88,7 +110,7 @@ def get_media_info(payload, info):
 def get_media(info):
     """Get the actual file by the given info.."""
     print(f"Downloading media directly: {info['url']}")
-    if info['type'] in ['image', 'video']:
+    if info['type'] in ['image', 'video', 'gif', 'gifv']:
         request = Request(info['url'], headers=headers)
         response = urlopen(request)
         media = response.read()
@@ -102,6 +124,7 @@ def get_youtube_dl_media(info):
         'quiet': True,
     }
     # Try to download the media with youtube-dl
+    print(f"Downloading via youtube_dl: {info['url']}")
     try:
         ydl = youtube_dl.YoutubeDL(options)
         yd_info = ydl.extract_info(info['url'])

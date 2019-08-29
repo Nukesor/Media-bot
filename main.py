@@ -20,11 +20,11 @@ async def replace_media_link(event):
 
         url = event.message.message
         info, media = download_media(url)
-        if info is None:
+        if info is None or media is None:
             return
 
-        print(f"Uploading: {info['title']}")
-        file_handle = await bot.upload_file(media, file_name=info['file_name'])
+        print(f"Uploading: {info['title']}, {info['file_name']}")
+        file_handle = await bot.upload_file(media, file_name='video.mp4')
 
         print("Sending")
         await bot.send_file(event.message.to_id,
