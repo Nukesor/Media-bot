@@ -4,6 +4,7 @@ import sys
 import toml
 from telethon import TelegramClient, events, types
 
+from mediabot import log
 from mediabot.config import config
 from mediabot.download import download_media
 
@@ -23,15 +24,16 @@ async def replace_media_link(event):
         if info is None or media is None:
             return
 
-        print(f"Uploading: {info['title']}, {info['file_name']}")
+        log("Got info and media, handling telethon stuff:")
+        log(f"--- Uploading: {info['title']}, {info['file_name']}")
         file_handle = await bot.upload_file(media, file_name=info['file_name'])
 
-        print("Sending")
+        log("--- Sending")
         await bot.send_file(event.message.to_id,
                             file=file_handle,
                             caption=info['title'],
                             )
-        print("Deleting old message")
+        log("--- Deleting old message")
         await event.message.delete()
     except Exception as e:
         pass

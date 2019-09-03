@@ -15,6 +15,7 @@ default_config = {
     'logging': {
         'sentry_enabled': False,
         'sentry_token': '',
+        'debug': False,
     },
 }
 

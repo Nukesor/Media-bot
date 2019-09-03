@@ -4,6 +4,9 @@ import pprint
 import youtube_dl
 from urllib.request import urlopen, Request
 
+from mediabot import log
+from mediabot.config import config
+
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0',
 }
@@ -11,31 +14,42 @@ headers = {
 
 def download_media(url):
     """Downloads media from reddit from a given url"""
+    log('\nGet media info from reddit')
     info = {'url': url}
     if not url.endswith('.json'):
         url += '.json'
     info = {'json_url': url}
     # Get the json information from reddit
+    log(f'--- Download Json: {url}')
     request = Request(url, headers=headers)
     response = urlopen(request)
     data = response.read().decode("utf-8")
     payload = json.loads(data)
 
     # Extract the media information from the payload
-    info = get_media_info(payload, info)
+    try:
+        info = get_media_info(payload, info)
+    except Exception as e:
+        log(f'--- Got exception: {e}')
+        raise e
 
-    pprint.pprint(info)
     # Check if we got some kind of info
     if info is None:
         return None, None
 
+    log('--- Got media info:')
+    log(f'--- {pprint.pformat(info)}')
+
+    log('Get media:')
     # Try to download the media using youtube-dl
     # Videos with sound or youtube videos can be eaily downloaded with youtube-dl
     if info['type'] == 'video' and info.get('youtube_dl', False):
+        log('--- Try youtube-dl')
         info, media = get_youtube_dl_media(info)
         if media is not None:
             return info, media
 
+    log('--- Try direct download')
     # Download videos without sound and images
     media = get_media(info)
 
@@ -52,6 +66,7 @@ def get_media_info(payload, info):
 
     # Reddit hosted images
     if data['domain'] == 'i.redd.it':
+        log('--- Detected reddit image')
         info['url'] = data['url']
         info['type'] = 'image'
         if info['url'].endswith('.jpg'):
@@ -60,8 +75,9 @@ def get_media_info(payload, info):
             info['file_name'] = data['title'] + '.png'
         return info
 
-    # Normal reddit hosted videos
+    # Reddit hosted videos
     elif data['domain'] == 'v.redd.it':
+        log('--- Detected reddit video')
         video_data = data['media']['reddit_video']
         info['url'] = video_data['fallback_url']
         info['type'] = 'video'
@@ -70,8 +86,9 @@ def get_media_info(payload, info):
         info['youtube_dl'] = True
         return info
 
-    # External videos
+    # Gfycat videos
     elif data['domain'] == 'gfycat.com':
+        log('--- Detected gfycat')
         url = data['secure_media']['oembed']['thumbnail_url']
         url = url.replace('size_restricted.gif', 'mobile.mp4')
         info['url'] = url
@@ -82,6 +99,7 @@ def get_media_info(payload, info):
 
     # Youtube video
     elif data['domain'] == 'youtu.be':
+        log('--- Detected youtube')
         info['url'] = data['url']
         info['type'] = 'video'
         info['file_name'] = 'video.mp4'
@@ -91,32 +109,38 @@ def get_media_info(payload, info):
     # Imgur
     elif data['domain'] == 'i.imgur.com':
         info['youtube_dl'] = False
-        # Gifvs
+        # Gif/gifv
         if data['url'].endswith('.gifv') or data['url'].endswith('.gif'):
-            url = data['preview']['images'][0]['variants']['mp4']['source']['url']
-            url = url.replace('amp;', '')
+            log('--- Detected imgur gif')
+            # We replace the .gifv and .gif, since imgur supports mp4 anyway
+            url = data['url']
+            url = url.replace('gifv', 'mp4')
+            url = url.replace('gif', 'mp4')
             info['url'] = url
-            info['type'] = 'gif'
+            info['type'] = 'video'
             info['file_name'] = 'video.mp4'
 
         # Images
         elif data['url'].endswith('.png'):
+            log('--- Detected imgur png')
             info['url'] = data['url']
             info['type'] = 'image'
             info['file_name'] = info['title'] + '.png'
         elif data['url'].endswith('.jpg'):
+            log('--- Detected imgur jpg')
             info['url'] = data['url']
             info['type'] = 'image'
             info['file_name'] = info['title'] + '.jpg'
 
         return info
 
+    log(f'--- Failed to detect media type')
     return None
 
 
 def get_media(info):
     """Get the actual file by the given info.."""
-    print(f"Downloading media directly: {info['url']}")
+    log(f"--- Downloading media directly: {info['url']}")
     if info['type'] in ['image', 'video', 'gif', 'gifv']:
         request = Request(info['url'], headers=headers)
         response = urlopen(request)
@@ -131,7 +155,7 @@ def get_youtube_dl_media(info):
         'quiet': True,
     }
     # Try to download the media with youtube-dl
-    print(f"Downloading via youtube_dl: {info['url']}")
+    log(f"--- Downloading via youtube_dl: {info['url']}")
     try:
         ydl = youtube_dl.YoutubeDL(options)
         yd_info = ydl.extract_info(info['url'])
@@ -144,10 +168,11 @@ def get_youtube_dl_media(info):
 
         os.remove(path)
 
+        log('--- Got media')
         info['youtube_dl'] = True
         return info, media
 
     except Exception as e:
-        print('Failed using yd')
+        log('--- Failed to use youtube-dl')
         print(e)
         return info, None
