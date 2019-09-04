@@ -63,19 +63,23 @@ def get_media_info(payload, info):
         data = data['crosspost_parent_list'][0]
 
     info['title'] = data['title']
+    info['youtube_dl'] = False
 
     # Reddit hosted images
     if data['domain'] == 'i.redd.it':
         log('--- Detected reddit image')
         info['url'] = data['url']
-        info['type'] = 'image'
         if info['url'].endswith('.jpg'):
+            info['type'] = 'image'
             info['file_name'] = data['title'] + '.jpg'
         elif info['url'].endswith('.png'):
+            info['type'] = 'image'
             info['file_name'] = data['title'] + '.png'
         elif info['url'].endswith('.gif'):
+            info['type'] = 'gif'
             info['file_name'] = data['title'] + '.gif'
         elif info['url'].endswith('.gifv'):
+            info['type'] = 'gif'
             info['file_name'] = data['title'] + '.gifv'
         return info
 
@@ -85,7 +89,6 @@ def get_media_info(payload, info):
         video_data = data['media']['reddit_video']
         info['url'] = video_data['fallback_url']
         info['type'] = 'video'
-        info['filename'] = 'image'
         info['file_name'] = 'video.mp4'
         info['youtube_dl'] = True
         return info
@@ -98,7 +101,6 @@ def get_media_info(payload, info):
         info['url'] = url
         info['type'] = 'video'
         info['file_name'] = 'video.mp4'
-        info['youtube_dl'] = False
         return info
 
     # Youtube video
@@ -112,7 +114,6 @@ def get_media_info(payload, info):
 
     # Imgur
     elif data['domain'] == 'i.imgur.com':
-        info['youtube_dl'] = False
         # Gif/gifv
         if data['url'].endswith('.gifv') or data['url'].endswith('.gif'):
             log('--- Detected imgur gif')
