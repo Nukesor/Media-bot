@@ -73,6 +73,10 @@ def get_media_info(payload, info):
             info['file_name'] = data['title'] + '.jpg'
         elif info['url'].endswith('.png'):
             info['file_name'] = data['title'] + '.png'
+        elif info['url'].endswith('.gif'):
+            info['file_name'] = data['title'] + '.gif'
+        elif info['url'].endswith('.gifv'):
+            info['file_name'] = data['title'] + '.gifv'
         return info
 
     # Reddit hosted videos

@@ -36,6 +36,7 @@ async def replace_media_link(event):
         log("--- Deleting old message")
         await event.message.delete()
     except Exception as e:
+        log(f"Got exception: {e}")
         pass
 
 
