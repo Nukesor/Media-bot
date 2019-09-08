@@ -26,7 +26,7 @@ async def replace_media_link(event):
 
         log("--- Sending")
         me = await bot.get_me()
-        if event.message.from_id != me.id:
+        if event.message.from_id == me.id:
             log("--- Sending to chat")
             await bot.send_file(
                 event.message.to_id,
