@@ -19,6 +19,7 @@ def download_media(url):
     if not url.endswith('.json'):
         url += '.json'
     info = {'json_url': url}
+
     # Get the json information from reddit
     log(f'--- Download Json: {url}')
     request = Request(url, headers=headers)

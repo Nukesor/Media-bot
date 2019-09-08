@@ -5,7 +5,7 @@ import toml
 from telethon import TelegramClient, events, types
 
 from mediabot import log
-from mediabot.config import config
+from mediabot.config import config, config_path
 from mediabot.download import download_media
 
 bot = TelegramClient('reddit_media_bot', config['telegram']['app_api_id'], config['telegram']['app_api_hash'])
@@ -15,10 +15,6 @@ bot = TelegramClient('reddit_media_bot', config['telegram']['app_api_id'], confi
 async def replace_media_link(event):
     """Set query attributes."""
     try:
-        me = await bot.get_me()
-        if event.message.from_id != me.id:
-            return
-
         url = event.message.message
         info, media = download_media(url)
         if info is None or media is None:
@@ -29,15 +25,54 @@ async def replace_media_link(event):
         file_handle = await bot.upload_file(media, file_name=info['file_name'])
 
         log("--- Sending")
-        await bot.send_file(event.message.to_id,
-                            file=file_handle,
-                            caption=info['title'],
-                            )
-        log("--- Deleting old message")
-        await event.message.delete()
+        me = await bot.get_me()
+        if event.message.from_id != me.id:
+            log("--- Sending to chat")
+            await bot.send_file(
+                event.message.to_id,
+                file=file_handle,
+                caption=info['title'],
+            )
+
+            log("--- Deleting old message")
+            await event.message.delete()
+
+        if config['telegram']['meme_chat_id'] != '':
+            log("--- Sending to meme chat")
+            await bot.send_file(
+                config['telegram']['meme_chat_id'],
+                file=file_handle,
+                caption=info['title'],
+            )
+
     except Exception as e:
         log(f"Got exception: {e}")
         pass
+
+
+@bot.on(events.NewMessage(pattern='memesplease'))
+async def set_media_chat(event):
+    me = await bot.get_me()
+    if event.message.from_id != me.id:
+        return
+
+    chat_id = event.message.to_id.chat_id
+    config['telegram']['meme_chat_id'] = chat_id
+
+    with open(config_path, "w") as file_descriptor:
+        toml.dump(config, file_descriptor)
+
+
+@bot.on(events.NewMessage(pattern='memestop'))
+async def delete_media_chat(event):
+    me = await bot.get_me()
+    if event.message.from_id != me.id:
+        return
+
+    config['telegram']['meme_chat_id'] = ''
+
+    with open(config_path, "w") as file_descriptor:
+        toml.dump(config, file_descriptor)
 
 
 bot.start(phone=config['telegram']['phone_number'])
