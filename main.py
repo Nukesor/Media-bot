@@ -13,7 +13,7 @@ bot = TelegramClient('reddit_media_bot', config['telegram']['app_api_id'], confi
 
 @bot.on(events.NewMessage(pattern='.*reddit\.com.*'))
 async def replace_media_link(event):
-    """Set query attributes."""
+    """Replace a reddit link with the actual media of the reddit link."""
     try:
         url = event.message.message
         info, media = download_media(url)
@@ -52,6 +52,7 @@ async def replace_media_link(event):
 
 @bot.on(events.NewMessage(pattern='memesplease'))
 async def set_media_chat(event):
+    """Set the media chat."""
     me = await bot.get_me()
     if event.message.from_id != me.id:
         return
@@ -65,6 +66,7 @@ async def set_media_chat(event):
 
 @bot.on(events.NewMessage(pattern='memestop'))
 async def delete_media_chat(event):
+    """Delete the current media chat id."""
     me = await bot.get_me()
     if event.message.from_id != me.id:
         return
