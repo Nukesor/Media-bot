@@ -4,7 +4,7 @@ import sys
 import toml
 from telethon import TelegramClient, events, types
 
-from mediabot import log
+from mediabot import log, get_peer_information
 from mediabot.config import config, config_path
 from mediabot.download import download_media
 
@@ -58,7 +58,8 @@ async def set_media_chat(event):
         if event.message.from_id != me.id:
             return
 
-        chat_id = event.message.to_id.chat_id
+        chat_id, peer_type = get_peer_information(event.message.to_id)
+        log(f"Setting media chat: {chat_id}")
         config['telegram']['meme_chat_id'] = chat_id
 
         with open(config_path, "w") as file_descriptor:
