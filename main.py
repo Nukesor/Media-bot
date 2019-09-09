@@ -63,6 +63,8 @@ async def set_media_chat(event):
     with open(config_path, "w") as file_descriptor:
         toml.dump(config, file_descriptor)
 
+    await event.respond(f'Chat id set to {chat_id}')
+
 
 @bot.on(events.NewMessage(pattern='memestop'))
 async def delete_media_chat(event):
@@ -76,6 +78,7 @@ async def delete_media_chat(event):
     with open(config_path, "w") as file_descriptor:
         toml.dump(config, file_descriptor)
 
+    await event.respond(f'Chat id set to {chat_id}')
 
 bot.start(phone=config['telegram']['phone_number'])
 bot.run_until_disconnected()
