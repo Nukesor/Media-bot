@@ -53,32 +53,38 @@ async def replace_media_link(event):
 @bot.on(events.NewMessage(pattern='memesplease'))
 async def set_media_chat(event):
     """Set the media chat."""
-    me = await bot.get_me()
-    if event.message.from_id != me.id:
-        return
+    try:
+        me = await bot.get_me()
+        if event.message.from_id != me.id:
+            return
 
-    chat_id = event.message.to_id.chat_id
-    config['telegram']['meme_chat_id'] = chat_id
+        chat_id = event.message.to_id.chat_id
+        config['telegram']['meme_chat_id'] = chat_id
 
-    with open(config_path, "w") as file_descriptor:
-        toml.dump(config, file_descriptor)
+        with open(config_path, "w") as file_descriptor:
+            toml.dump(config, file_descriptor)
 
-    await event.respond(f'Chat id set to {chat_id}')
+        await event.respond(f'Chat id set to {chat_id}')
+    except Exception as e:
+        log(f"Got exception: {e}")
 
 
 @bot.on(events.NewMessage(pattern='memestop'))
 async def delete_media_chat(event):
     """Delete the current media chat id."""
-    me = await bot.get_me()
-    if event.message.from_id != me.id:
-        return
+    try:
+        me = await bot.get_me()
+        if event.message.from_id != me.id:
+            return
 
-    config['telegram']['meme_chat_id'] = ''
+        config['telegram']['meme_chat_id'] = ''
 
-    with open(config_path, "w") as file_descriptor:
-        toml.dump(config, file_descriptor)
+        with open(config_path, "w") as file_descriptor:
+            toml.dump(config, file_descriptor)
 
-    await event.respond(f'Chat id set to {chat_id}')
+        await event.respond(f'Chat id set to {chat_id}')
+    except Exception as e:
+        log(f"Got exception: {e}")
 
 bot.start(phone=config['telegram']['phone_number'])
 bot.run_until_disconnected()
