@@ -37,7 +37,9 @@ async def replace_media_link(event):
             log("--- Deleting old message")
             await event.message.delete()
 
-        if config['telegram']['meme_chat_id'] != '':
+        chat_id, chat_type = get_peer_information(event.message.to_id)
+        meme_chat_id = config['telegram']['meme_chat_id']
+        if meme_chat_id != '' and meme_chat_id != chat_id:
             log("--- Sending to meme chat")
             await bot.send_file(
                 config['telegram']['meme_chat_id'],
