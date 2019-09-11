@@ -11,6 +11,10 @@ default_config = {
         'phone_number': 'your_phone_number (empty if not in userbot mode)',
         'app_api_id': 0,
         'app_api_hash': 'apihash',
+    },
+    'bot': {
+        'backup': False,
+        'backup_path': ".",
         'meme_chat_id': '',
     },
     'logging': {

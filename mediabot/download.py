@@ -44,7 +44,7 @@ def download_media(url):
     log('Get media:')
     # Try to download the media using youtube-dl
     # Videos with sound or youtube videos can be eaily downloaded with youtube-dl
-    if info['type'] == 'video' and info.get('youtube_dl', False):
+    if info['type'] == 'mp4' and info.get('youtube_dl', False):
         log('--- Try youtube-dl')
         info, media = get_youtube_dl_media(info)
         if media is not None:
@@ -71,17 +71,13 @@ def get_media_info(payload, info):
         log('--- Detected reddit image')
         info['url'] = data['url']
         if info['url'].endswith('.jpg'):
-            info['type'] = 'image'
-            info['file_name'] = data['title'] + '.jpg'
+            info['type'] = 'jpg'
         elif info['url'].endswith('.png'):
-            info['type'] = 'image'
-            info['file_name'] = data['title'] + '.png'
+            info['type'] = 'png'
         elif info['url'].endswith('.gif'):
             info['type'] = 'gif'
-            info['file_name'] = data['title'] + '.gif'
         elif info['url'].endswith('.gifv'):
-            info['type'] = 'gif'
-            info['file_name'] = data['title'] + '.gifv'
+            info['type'] = 'gifv'
         return info
 
     # Reddit hosted videos
@@ -89,8 +85,7 @@ def get_media_info(payload, info):
         log('--- Detected reddit video')
         video_data = data['media']['reddit_video']
         info['url'] = video_data['fallback_url']
-        info['type'] = 'video'
-        info['file_name'] = 'video.mp4'
+        info['type'] = 'mp4'
         info['youtube_dl'] = True
         return info
 
@@ -100,16 +95,14 @@ def get_media_info(payload, info):
         url = data['secure_media']['oembed']['thumbnail_url']
         url = url.replace('size_restricted.gif', 'mobile.mp4')
         info['url'] = url
-        info['type'] = 'video'
-        info['file_name'] = 'video.mp4'
+        info['type'] = 'mp4'
         return info
 
     # Youtube video
     elif data['domain'] == 'youtu.be':
         log('--- Detected youtube')
         info['url'] = data['url']
-        info['type'] = 'video'
-        info['file_name'] = 'video.mp4'
+        info['type'] = 'mp4'
         info['youtube_dl'] = True
         return info
 
@@ -123,20 +116,17 @@ def get_media_info(payload, info):
             url = url.replace('gifv', 'mp4')
             url = url.replace('gif', 'mp4')
             info['url'] = url
-            info['type'] = 'video'
-            info['file_name'] = 'video.mp4'
+            info['type'] = 'mp4'
 
         # Images
         elif data['url'].endswith('.png'):
             log('--- Detected imgur png')
             info['url'] = data['url']
-            info['type'] = 'image'
-            info['file_name'] = info['title'] + '.png'
+            info['type'] = 'png'
         elif data['url'].endswith('.jpg'):
             log('--- Detected imgur jpg')
             info['url'] = data['url']
-            info['type'] = 'image'
-            info['file_name'] = info['title'] + '.jpg'
+            info['type'] = 'jpg'
 
         return info
 
@@ -147,11 +137,10 @@ def get_media_info(payload, info):
 def get_media(info):
     """Get the actual file by the given info.."""
     log(f"--- Downloading media directly: {info['url']}")
-    if info['type'] in ['image', 'video', 'gif', 'gifv']:
-        request = Request(info['url'], headers=headers)
-        response = urlopen(request)
-        media = response.read()
-        return media
+    request = Request(info['url'], headers=headers)
+    response = urlopen(request)
+    media = response.read()
+    return media
 
 
 def get_youtube_dl_media(info):

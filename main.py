@@ -5,6 +5,7 @@ import toml
 from telethon import TelegramClient, events, types
 
 from mediabot import log, get_peer_information
+from mediabot.backup import backup_file
 from mediabot.config import config, config_path
 from mediabot.download import download_media
 
@@ -19,13 +20,24 @@ async def replace_media_link(event):
         info, media = download_media(url)
         if info is None or media is None:
             return
+        log("Got info and media:")
 
-        log("Got info and media, handling telethon stuff:")
-        log(f"--- Uploading: {info['title']}, {info['file_name']}")
-        file_handle = await bot.upload_file(media, file_name=info['file_name'])
+        # Backup the file to the disk
+        if config['bot']['backup']:
+            log("Backing up media to disk")
+            await backup_file(bot, event.message.from_id, info, media)
+
+        log("Handle telethon stuff:")
+        log(f"--- Uploading: {info['title']}")
+        file_handle = await bot.upload_file(
+            media,
+            file_name=f"{info['title']}.{info['type']}"
+        )
 
         log("--- Sending")
         me = await bot.get_me()
+        # Send the file to the chat and replace the message
+        # if the message was send by yourself
         if event.message.from_id == me.id:
             log("--- Sending to chat")
             await bot.send_file(
@@ -37,12 +49,13 @@ async def replace_media_link(event):
             log("--- Deleting old message")
             await event.message.delete()
 
+        # Send the file to a meme chat if it's specified
         chat_id, chat_type = get_peer_information(event.message.to_id)
-        meme_chat_id = config['telegram']['meme_chat_id']
+        meme_chat_id = config['bot']['meme_chat_id']
         if meme_chat_id != '' and meme_chat_id != chat_id:
             log("--- Sending to meme chat")
             await bot.send_file(
-                config['telegram']['meme_chat_id'],
+                meme_chat_id,
                 file=file_handle,
                 caption=info['title'],
             )
@@ -62,7 +75,7 @@ async def set_media_chat(event):
 
         chat_id, peer_type = get_peer_information(event.message.to_id)
         log(f"Setting media chat: {chat_id}")
-        config['telegram']['meme_chat_id'] = chat_id
+        config['bot']['meme_chat_id'] = chat_id
 
         with open(config_path, "w") as file_descriptor:
             toml.dump(config, file_descriptor)
@@ -80,7 +93,7 @@ async def delete_media_chat(event):
         if event.message.from_id != me.id:
             return
 
-        config['telegram']['meme_chat_id'] = ''
+        config['bot']['meme_chat_id'] = ''
 
         with open(config_path, "w") as file_descriptor:
             toml.dump(config, file_descriptor)
