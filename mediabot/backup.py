@@ -22,7 +22,8 @@ async def backup_file(bot, from_id, info, media):
     log(f"--- Username: {username}")
 
     # Compile path
-    dir_path = os.path.join(config['bot']['backup_path'], username)
+    base_path = os.path.expanduser(config['bot']['backup_path'])
+    dir_path = os.path.join(base_path, username)
     file_path = os.path.join(dir_path, file_name)
     log(f"--- Username: {file_path}")
     os.makedirs(dir_path, mode=0o755, exist_ok=True)
