@@ -104,3 +104,22 @@ async def delete_media_chat(event):
 
 bot.start(phone=config['telegram']['phone_number'])
 bot.run_until_disconnected()
+
+
+@bot.on(events.NewMessage(pattern='chat_id'))
+async def print_chat_id(event):
+    """Print the current chat id and type for debugging."""
+    try:
+        me = await bot.get_me()
+        if event.message.from_id != me.id:
+            return
+
+        chat_id, peer_type = get_peer_information(event.message.to_id)
+        message = f'Chat type: {peer_type}, chat id: {chat_id}'
+
+        await event.respond(message)
+    except Exception as e:
+        log(f"Got exception: {e}")
+
+bot.start(phone=config['telegram']['phone_number'])
+bot.run_until_disconnected()
