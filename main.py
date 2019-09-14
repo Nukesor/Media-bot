@@ -102,9 +102,6 @@ async def delete_media_chat(event):
     except Exception as e:
         log(f"Got exception: {e}")
 
-bot.start(phone=config['telegram']['phone_number'])
-bot.run_until_disconnected()
-
 
 @bot.on(events.NewMessage(pattern='chat_id'))
 async def print_chat_id(event):
@@ -120,6 +117,7 @@ async def print_chat_id(event):
         await event.respond(message)
     except Exception as e:
         log(f"Got exception: {e}")
+
 
 bot.start(phone=config['telegram']['phone_number'])
 bot.run_until_disconnected()
