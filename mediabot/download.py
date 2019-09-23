@@ -98,6 +98,16 @@ def get_media_info(payload, info):
         info['type'] = 'mp4'
         return info
 
+    # Giphy videos
+    elif data['domain'] == 'media.giphy.com':
+        log('--- Detected giphy')
+        url = data['url']
+        url = url.replace('media.giphy.com', 'i.giphy.com')
+        url = url.replace('giphy.gif', 'giphy.mp4')
+        info['url'] = url
+        info['type'] = 'mp4'
+        return info
+
     # Youtube video
     elif data['domain'] == 'youtu.be':
         log('--- Detected youtube')
