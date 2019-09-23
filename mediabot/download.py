@@ -117,7 +117,7 @@ def get_media_info(payload, info):
         return info
 
     # Imgur
-    elif data['domain'] == 'i.imgur.com':
+    elif data['domain'] in ['i.imgur.com', 'imgur.com']:
         # Gif/gifv
         if data['url'].endswith('.gifv') or data['url'].endswith('.gif'):
             log('--- Detected imgur gif')
