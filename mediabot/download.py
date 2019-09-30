@@ -157,9 +157,9 @@ def get_media(info):
 def get_youtube_dl_media(info):
     """Try to download a clip via youtube-dl."""
     random_hash = secrets.token_hex(nbytes=8)
-    temp_dir = 'reddit_' + random_hash
+    hash = 'reddit_' + random_hash
     options = {
-        'outtmpl': f'/tmp/{temp_dir}/%(title)s.%(ext)s',
+        'outtmpl': f'/tmp/{hash}_%(title)s.%(ext)s',
         'quiet': True,
     }
     # Try to download the media with youtube-dl
@@ -169,12 +169,10 @@ def get_youtube_dl_media(info):
         yd_info = ydl.extract_info(info['url'])
 
         # Compile file path
-        path = f"/tmp/{temp_dir}/{yd_info['title']}.{yd_info['ext']}"
+        path = f"/tmp/{hash}_{yd_info['title']}.{yd_info['ext']}"
 
         with open(path, 'rb') as file:
             media = file.read()
-
-        os.rmdir(temp_dir)
 
         log('--- Got media')
         info['youtube_dl'] = True
