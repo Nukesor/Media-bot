@@ -2,7 +2,6 @@
 import os
 import sys
 import toml
-import logging
 
 default_config = {
     'telegram': {

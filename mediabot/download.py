@@ -1,4 +1,4 @@
-import os
+"""Media download and download info extraction logic."""
 import json
 import pprint
 import secrets
@@ -6,20 +6,39 @@ import youtube_dl
 from urllib.request import urlopen, Request
 
 from mediabot import log
-from mediabot.config import config
+from mediabot.link_handling import (
+    info_from_vreddit,
+    info_from_ireddit,
+    info_from_gyfcat,
+    info_from_giphy,
+    info_from_youtube,
+    info_from_imgur,
+)
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0',
 }
 
 
-def download_media(url):
-    """Downloads media from reddit from a given url"""
+class Info():
+    """Class representing information about a media file."""
+
+    url = None
+    type = None
+    title = None
+    youtube_dl = False
+
+    def __init__(self):
+        self.youtube_dl = False
+
+
+def handle_reddit_web_url(url):
+    """Download media from reddit from a given web url."""
     log('\nGet media info from reddit')
-    info = {'url': url}
     if not url.endswith('.json'):
         url += '.json'
-    info = {'json_url': url}
+    info = Info()
+    info.json_url = url
 
     # Get the json information from reddit
     log(f'--- Download Json: {url}')
@@ -43,17 +62,7 @@ def download_media(url):
     log(f'--- {pprint.pformat(info)}')
 
     log('Get media:')
-    # Try to download the media using youtube-dl
-    # Videos with sound or youtube videos can be eaily downloaded with youtube-dl
-    if info['type'] == 'mp4' and info.get('youtube_dl', False):
-        log('--- Try youtube-dl')
-        info, media = get_youtube_dl_media(info)
-        if media is not None:
-            return info, media
-
-    log('--- Try direct download')
-    # Download videos without sound and images
-    media = get_media(info)
+    media = download_media(info)
 
     return info, media
 
@@ -64,97 +73,62 @@ def get_media_info(payload, info):
     if 'crosspost_parent_list' in data:
         data = data['crosspost_parent_list'][0]
 
-    info['title'] = data['title']
-    info['youtube_dl'] = False
+    info.title = data['title']
+    info.youtube_dl = False
 
     # Reddit hosted images
     if data['domain'] == 'i.redd.it':
-        log('--- Detected reddit image')
-        info['url'] = data['url']
-        if info['url'].endswith('.jpg'):
-            info['type'] = 'jpg'
-        elif info['url'].endswith('.png'):
-            info['type'] = 'png'
-        elif info['url'].endswith('.gif'):
-            info['type'] = 'gif'
-        elif info['url'].endswith('.gifv'):
-            info['type'] = 'gifv'
-        return info
+        return info_from_ireddit(info, data['url'])
 
     # Reddit hosted videos
     elif data['domain'] == 'v.redd.it':
-        log('--- Detected reddit video')
-        video_data = data['media']['reddit_video']
-        info['url'] = video_data['fallback_url']
-        info['type'] = 'mp4'
-        info['youtube_dl'] = True
-        return info
+        return info_from_vreddit(info, data['media']['reddit_video']['fallback_url'])
 
     # Gfycat videos
     elif data['domain'] == 'gfycat.com':
-        log('--- Detected gfycat')
         url = data['secure_media']['oembed']['thumbnail_url']
-        url = url.replace('size_restricted.gif', 'mobile.mp4')
-        info['url'] = url
-        info['type'] = 'mp4'
-        return info
+        return info_from_gyfcat(info, url)
 
     # Giphy videos
     elif data['domain'] == 'media.giphy.com':
-        log('--- Detected giphy')
-        url = data['url']
-        url = url.replace('media.giphy.com', 'i.giphy.com')
-        url = url.replace('giphy.gif', 'giphy.mp4')
-        info['url'] = url
-        info['type'] = 'mp4'
-        return info
+        return info_from_giphy(info, data['url'])
 
     # Youtube video
     elif data['domain'] == 'youtu.be':
-        log('--- Detected youtube')
-        info['url'] = data['url']
-        info['type'] = 'mp4'
-        info['youtube_dl'] = True
-        return info
+        return info_from_youtube(info, url)
 
     # Imgur
     elif data['domain'] in ['i.imgur.com', 'imgur.com']:
-        # Gif/gifv
-        if data['url'].endswith('.gifv') or data['url'].endswith('.gif'):
-            log('--- Detected imgur gif')
-            # We replace the .gifv and .gif, since imgur supports mp4 anyway
-            url = data['url']
-            url = url.replace('gifv', 'mp4')
-            url = url.replace('gif', 'mp4')
-            info['url'] = url
-            info['type'] = 'mp4'
-
-        # Images
-        elif data['url'].endswith('.png'):
-            log('--- Detected imgur png')
-            info['url'] = data['url']
-            info['type'] = 'png'
-        elif data['url'].endswith('.jpg'):
-            log('--- Detected imgur jpg')
-            info['url'] = data['url']
-            info['type'] = 'jpg'
-
-        return info
+        return info_from_imgur(info, data['url'])
 
     log(f'--- Failed to detect media type')
     return None
 
 
-def get_media(info):
-    """Get the actual file by the given info.."""
-    log(f"--- Downloading media directly: {info['url']}")
-    request = Request(info['url'], headers=headers)
+def download_media(info):
+    """Get the actual media by the given info."""
+    # If we are supposed to use youtube-dl, try using it
+    # Videos with sound or youtube videos can be downloaded
+    # more easily with youtube-dl
+    if info.type == 'mp4' and info.youtube_dl:
+        log('--- Try youtube-dl')
+        info, media = download_youtube_dl_media(info)
+        # We got some media return it
+        if media is not None:
+            return info, media
+
+        # If we didn't, continue and try a direct download
+        log('--- youtube-dl failed')
+
+    log(f"--- Downloading media directly: {info.url}")
+    request = Request(info.url, headers=headers)
     response = urlopen(request)
     media = response.read()
-    return media
+
+    return info, media
 
 
-def get_youtube_dl_media(info):
+def download_youtube_dl_media(info):
     """Try to download a clip via youtube-dl."""
     random_hash = secrets.token_hex(nbytes=8)
     hash = 'reddit_' + random_hash
@@ -163,10 +137,10 @@ def get_youtube_dl_media(info):
         'quiet': True,
     }
     # Try to download the media with youtube-dl
-    log(f"--- Downloading via youtube_dl: {info['url']}")
+    log(f"--- Downloading via youtube_dl: {info.url}")
     try:
         ydl = youtube_dl.YoutubeDL(options)
-        yd_info = ydl.extract_info(info['url'])
+        yd_info = ydl.extract_info(info.url)
 
         # Compile file path
         path = f"/tmp/{hash}_{yd_info['title']}.{yd_info['ext']}"
@@ -175,7 +149,7 @@ def get_youtube_dl_media(info):
             media = file.read()
 
         log('--- Got media')
-        info['youtube_dl'] = True
+        info.youtube_dl = True
         return info, media
 
     except Exception as e:
