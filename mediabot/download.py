@@ -9,7 +9,7 @@ from mediabot import log
 from mediabot.link_handling import (
     info_from_vreddit,
     info_from_ireddit,
-    info_from_gyfcat,
+    info_from_gfycat,
     info_from_giphy,
     info_from_youtube,
     info_from_imgur,
@@ -87,7 +87,7 @@ def get_media_info(payload, info):
     # Gfycat videos
     elif data['domain'] == 'gfycat.com':
         url = data['secure_media']['oembed']['thumbnail_url']
-        return info_from_gyfcat(info, url)
+        return info_from_gfycat(info, url)
 
     # Giphy videos
     elif data['domain'] == 'media.giphy.com':
@@ -95,7 +95,7 @@ def get_media_info(payload, info):
 
     # Youtube video
     elif data['domain'] == 'youtu.be':
-        return info_from_youtube(info, url)
+        return info_from_youtube(info, data['url'])
 
     # Imgur
     elif data['domain'] in ['i.imgur.com', 'imgur.com']:

@@ -26,10 +26,11 @@ def info_from_vreddit(info, url):
     return info
 
 
-def info_from_gyfcat(info, url):
-    """Populate info object with info from gyfcat.com url."""
+def info_from_gfycat(info, url):
+    """Populate info object with info from gfycat.com url."""
     log('--- Detected gfycat')
-    url = url.replace('size_restricted.gif', 'mobile.mp4')
+    url = url.replace('https://gfycat', 'https://thumbs.gfycat')
+    url += '-mobile.mp4'
     info.url = url
     info.type = 'mp4'
     return info

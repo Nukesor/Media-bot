@@ -11,7 +11,11 @@ from mediabot.download import (
 from mediabot.config import config
 from mediabot.backup import backup_file
 from mediabot.link_handling import (
+    info_from_ireddit,
     info_from_imgur,
+    info_from_giphy,
+    info_from_youtube,
+    info_from_gfycat,
 )
 
 
@@ -31,27 +35,59 @@ async def replace_reddit_post_link(event):
         pass
 
 
+@bot.on(events.NewMessage(pattern='.*i\.redd\.it.*'))
+async def replace_ireddit_link(event):
+    """Handle ireddit links."""
+    await download_direct_link(event, info_from_ireddit)
+
+
 @bot.on(events.NewMessage(pattern='.*imgur\.com.*'))
 async def replace_imgur_link(event):
     """Handle imgur links."""
+    await download_direct_link(event, info_from_imgur)
+
+
+@bot.on(events.NewMessage(pattern='.*giphy\.com.*'))
+async def replace_giphy_link(event):
+    """Handle giphy links."""
+    await download_direct_link(event, info_from_giphy)
+
+
+@bot.on(events.NewMessage(pattern='.*youtube\.com.*'))
+async def replace_youtube_link(event):
+    """Handle youtube links."""
+    await download_direct_link(event, info_from_youtube)
+
+
+@bot.on(events.NewMessage(pattern='.*gfycat\.com.*'))
+async def replace_gfycat_link(event):
+    """Handle gfycat links."""
+    await download_direct_link(event, info_from_gfycat)
+
+
+
+async def download_direct_link(event, function):
+    """Generic download class for forwarded messages."""
     try:
         text = event.message.message
         info = Info()
 
-        log(f'Got imgur link: {text}')
+        log(f'Got link: {text}')
         splitted = text.split('\n')
         if len(splitted) == 1:
-            info_from_imgur(info, splitted[0])
+            function(info, splitted[0])
         elif len(splitted) == 2:
             info.title = splitted[0]
-            info_from_imgur(info, splitted[1])
+            function(info, splitted[1])
         elif len(splitted) > 2:
             return
 
         info, media = download_media(info)
+        await handle_file_backup(event, info, media)
         await handle_file_upload(event, info, media)
     except Exception as e:
         print(e)
+        raise e
 
 
 async def handle_file_upload(event, info, media):

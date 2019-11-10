@@ -11,8 +11,8 @@ async def backup_file(bot, from_id, info, media):
     """Backup the media to a file."""
     # Compile file name
     today = date.today().isoformat()
-    title = info['title']
-    extension = info['type']
+    title = info.title
+    extension = info.type
     file_name = f"{today}_{title}.{extension}"
 
     log(f"--- File name: {file_name}")
