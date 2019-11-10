@@ -35,35 +35,34 @@ async def replace_reddit_post_link(event):
         pass
 
 
-@bot.on(events.NewMessage(pattern='.*i\.redd\.it.*'))
+@bot.on(events.NewMessage(pattern='(?s).*i\.redd\.it.*'))
 async def replace_ireddit_link(event):
     """Handle ireddit links."""
     await download_direct_link(event, info_from_ireddit)
 
 
-@bot.on(events.NewMessage(pattern='.*imgur\.com.*'))
+@bot.on(events.NewMessage(pattern='(?s).*imgur\.com.*'))
 async def replace_imgur_link(event):
     """Handle imgur links."""
     await download_direct_link(event, info_from_imgur)
 
 
-@bot.on(events.NewMessage(pattern='.*giphy\.com.*'))
+@bot.on(events.NewMessage(pattern='(?s).*giphy\.com.*'))
 async def replace_giphy_link(event):
     """Handle giphy links."""
     await download_direct_link(event, info_from_giphy)
 
 
-@bot.on(events.NewMessage(pattern='.*youtube\.com.*'))
+@bot.on(events.NewMessage(pattern='(?s).*youtube\.com.*'))
 async def replace_youtube_link(event):
     """Handle youtube links."""
     await download_direct_link(event, info_from_youtube)
 
 
-@bot.on(events.NewMessage(pattern='.*gfycat\.com.*'))
+@bot.on(events.NewMessage(pattern='(?s).*gfycat\.com.*'))
 async def replace_gfycat_link(event):
     """Handle gfycat links."""
     await download_direct_link(event, info_from_gfycat)
-
 
 
 async def download_direct_link(event, function):
