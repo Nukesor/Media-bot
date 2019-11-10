@@ -10,6 +10,7 @@ repository = "https://github.com/nukesor/reddit-media-bot"
 python = ">=3.6"
 raven = "6.10"
 alembic = "1.0"
+requests = "2.22"
 
 telethon = "^1.10"
 

@@ -1,11 +1,13 @@
 """Download and message replace logic."""
+import requests
 from telethon import events
 
 from mediabot import log, get_peer_information
 from mediabot.telethon import bot
 from mediabot.download import (
-    handle_reddit_web_url,
     download_media,
+    handle_reddit_web_url,
+    headers,
     Info,
 )
 from mediabot.config import config
@@ -35,9 +37,38 @@ async def replace_reddit_post_link(event):
         pass
 
 
+@bot.on(events.NewMessage(pattern='(?s).*v\.redd\.it.*'))
+async def replace_vreddit_link(event):
+    """Handle v.redd.it links."""
+    text = event.message.message
+    splitted = text.split('\n')
+    if len(splitted) == 1:
+        url = splitted[0]
+    elif len(splitted) == 2:
+        url = splitted[1]
+    elif len(splitted) > 2:
+        return
+
+    response = requests.get(url, headers=headers, allow_redirects=False)
+    url = response.headers['Location']
+    response = requests.get(url, headers=headers, allow_redirects=False)
+    url = response.headers['Location']
+
+    try:
+        info, media = handle_reddit_web_url(url)
+        if info is None or media is None:
+            return
+        await handle_file_backup(event, info, media)
+        await handle_file_upload(event, info, media)
+
+    except Exception as e:
+        log(f"Got exception: {e}")
+        pass
+
+
 @bot.on(events.NewMessage(pattern='(?s).*i\.redd\.it.*'))
 async def replace_ireddit_link(event):
-    """Handle ireddit links."""
+    """Handle i.redd.it links."""
     await download_direct_link(event, info_from_ireddit)
 
 
@@ -85,7 +116,7 @@ async def download_direct_link(event, function):
         await handle_file_backup(event, info, media)
         await handle_file_upload(event, info, media)
     except Exception as e:
-        print(e)
+        log(f"Got exception: {e}")
         raise e
 
 

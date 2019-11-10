@@ -62,7 +62,7 @@ def handle_reddit_web_url(url):
     log(f'--- {pprint.pformat(info)}')
 
     log('Get media:')
-    media = download_media(info)
+    info, media = download_media(info)
 
     return info, media
 
