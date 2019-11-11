@@ -27,6 +27,7 @@ class Info():
     type = None
     title = None
     youtube_dl = False
+    youtube_dl_url = None
 
     def __init__(self):
         self.youtube_dl = False
@@ -35,9 +36,10 @@ class Info():
 def handle_reddit_web_url(url):
     """Download media from reddit from a given web url."""
     log('\nGet media info from reddit')
+    info = Info()
+    info.youtube_dl_url = url
     if not url.endswith('.json'):
         url += '.json'
-    info = Info()
     info.json_url = url
 
     # Get the json information from reddit
@@ -74,7 +76,6 @@ def get_media_info(payload, info):
         data = data['crosspost_parent_list'][0]
 
     info.title = data['title']
-    info.youtube_dl = False
 
     # Reddit hosted images
     if data['domain'] == 'i.redd.it':
@@ -136,10 +137,10 @@ def download_youtube_dl_media(info):
         'quiet': True,
     }
     # Try to download the media with youtube-dl
-    log(f"--- Downloading via youtube_dl: {info.url}")
+    log(f"--- Downloading via youtube_dl: {info.youtube_dl_url}")
     try:
         ydl = youtube_dl.YoutubeDL(options)
-        yd_info = ydl.extract_info(info.url)
+        yd_info = ydl.extract_info(info.youtube_dl_url)
 
         # Compile file path
         path = f"/tmp/{hash}_{yd_info['title']}.{yd_info['ext']}"
@@ -148,7 +149,6 @@ def download_youtube_dl_media(info):
             media = file.read()
 
         log('--- Got media')
-        info.youtube_dl = True
         return info, media
 
     except Exception as e:

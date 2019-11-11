@@ -67,7 +67,7 @@ def info_from_giphy(info, url):
 def info_from_youtube(info, url):
     """Populate info object with info from youtube.com url."""
     log('--- Detected youtube')
-    info.url = url
+    info.youtube_dl_url = url
     info.type = 'mp4'
     info.youtube_dl = True
     return info
