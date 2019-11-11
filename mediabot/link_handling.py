@@ -17,6 +17,8 @@ def info_from_ireddit(info, url):
     elif info.url.endswith('.gifv'):
         info.type = 'gifv'
 
+    return info
+
 
 def info_from_vreddit(info, url):
     """Populate info object with info from v.redd.it url."""
