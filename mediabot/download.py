@@ -86,8 +86,7 @@ def get_media_info(payload, info):
 
     # Gfycat videos
     elif data['domain'] == 'gfycat.com':
-        url = data['secure_media']['oembed']['thumbnail_url']
-        return info_from_gfycat(info, url)
+        return info_from_gfycat(info, data['url'])
 
     # Giphy videos
     elif data['domain'] == 'media.giphy.com':

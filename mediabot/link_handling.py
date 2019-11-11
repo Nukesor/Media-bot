@@ -1,4 +1,6 @@
 """Media url link handling logic."""
+import requests
+from bs4 import BeautifulSoup
 from mediabot import log
 
 
@@ -29,8 +31,22 @@ def info_from_vreddit(info, url):
 def info_from_gfycat(info, url):
     """Populate info object with info from gfycat.com url."""
     log('--- Detected gfycat')
-    url = url.replace('https://gfycat', 'https://thumbs.gfycat')
-    url += '-mobile.mp4'
+    response = requests.get(url)
+
+    soup = BeautifulSoup(response.text, features="html.parser")
+    container = soup.find("div", {"class": "video-container"})
+    video = container.find("video")
+    sources = video.children
+
+    url = None
+    for source in sources:
+        if source['src'].startswith('https://giant.gfycat') and source['src'].endswith('.mp4'):
+            url = source['src']
+            break
+
+    if url is None:
+        return
+
     info.url = url
     info.type = 'mp4'
     return info
