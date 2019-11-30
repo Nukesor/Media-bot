@@ -85,12 +85,6 @@ async def replace_giphy_link(event):
     await download_direct_link(event, info_from_giphy)
 
 
-@bot.on(events.NewMessage(pattern='(?s).*youtube\.com.*'))
-async def replace_youtube_link(event):
-    """Handle youtube links."""
-    await download_direct_link(event, info_from_youtube)
-
-
 @bot.on(events.NewMessage(pattern='(?s).*gfycat\.com.*'))
 async def replace_gfycat_link(event):
     """Handle gfycat links."""
