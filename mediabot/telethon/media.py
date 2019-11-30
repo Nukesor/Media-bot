@@ -1,6 +1,7 @@
 """Download and message replace logic."""
 import requests
 from telethon import events
+from datetime import datetime
 
 from mediabot import log, get_peer_information
 from mediabot.telethon import bot
@@ -106,11 +107,14 @@ async def download_direct_link(event, function):
         splitted = text.split('\n')
         if len(splitted) == 1:
             function(info, splitted[0])
+            now = datetime.now()
+            info.title = now.strftime("%H-%M-%S")
         elif len(splitted) == 2:
             info.title = splitted[0]
             function(info, splitted[1])
         elif len(splitted) > 2:
             return
+
 
         info, media = download_media(info)
         await handle_file_backup(event, info, media)
