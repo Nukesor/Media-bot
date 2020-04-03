@@ -4,26 +4,18 @@ import sys
 import toml
 
 default_config = {
-    'telegram': {
-        'userbot': True,
-        'api_key': 'your_telegram_api_key (empty if in userbot mode)',
-        'phone_number': 'your_phone_number (empty if not in userbot mode)',
-        'app_api_id': 0,
-        'app_api_hash': 'apihash',
+    "telegram": {
+        "userbot": True,
+        "api_key": "your_telegram_api_key (empty if in userbot mode)",
+        "phone_number": "your_phone_number (empty if not in userbot mode)",
+        "app_api_id": 0,
+        "app_api_hash": "apihash",
     },
-    'bot': {
-        'backup': False,
-        'backup_path': ".",
-        'meme_chat_id': '',
-    },
-    'logging': {
-        'sentry_enabled': False,
-        'sentry_token': '',
-        'debug': False,
-    },
+    "bot": {"backup": False, "backup_path": ".", "meme_chat_id": "",},
+    "logging": {"sentry_enabled": False, "sentry_token": "", "debug": False,},
 }
 
-config_path = os.path.expanduser('~/.config/reddit_media_bot.toml')
+config_path = os.path.expanduser("~/.config/reddit_media_bot.toml")
 
 if not os.path.exists(config_path):
     with open(config_path, "w") as file_descriptor:

@@ -21,14 +21,14 @@ async def backup_file(bot, from_id, info, media):
     username = get_username(user)
 
     # Compile path
-    base_path = os.path.expanduser(config['bot']['backup_path'])
+    base_path = os.path.expanduser(config["bot"]["backup_path"])
     dir_path = os.path.join(base_path, username)
     file_path = os.path.join(dir_path, file_name)
     log(f"--- Path : {file_path}")
     os.makedirs(dir_path, mode=0o755, exist_ok=True)
 
     # Write to disk
-    with open(file_path, 'wb') as media_file:
+    with open(file_path, "wb") as media_file:
         media_file.write(media)
     log(f"--- Saved to disk!")
 

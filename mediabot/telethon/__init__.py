@@ -5,9 +5,9 @@ from mediabot.config import config
 
 
 bot = TelegramClient(
-    'reddit_media_bot',
-    config['telegram']['app_api_id'],
-    config['telegram']['app_api_hash']
+    "reddit_media_bot",
+    config["telegram"]["app_api_id"],
+    config["telegram"]["app_api_hash"],
 )
 
 
