@@ -142,8 +142,12 @@ def download_youtube_dl_media(info):
         ydl = youtube_dl.YoutubeDL(options)
         yd_info = ydl.extract_info(info.youtube_dl_url)
 
-        # Compile file path
-        path = f"/tmp/{hash}_{yd_info['title']}.{yd_info['ext']}"
+        # Remove invalid chars that are removed from the title by youtube_dl
+        title = yd_info['title']
+        for invalid_char in ['?']:
+            title = title.replace('?', '')
+
+        path = f"/tmp/{hash}_{title}.{yd_info['ext']}"
 
         with open(path, "rb") as file:
             media = file.read()
