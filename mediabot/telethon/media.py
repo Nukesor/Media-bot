@@ -102,7 +102,7 @@ async def download_direct_link(event, function):
         if len(splitted) == 1:
             function(info, splitted[0])
             now = datetime.now()
-            info.title = now.strftime("%H-%M-%S")
+            info.title = None
         elif len(splitted) == 2:
             info.title = splitted[0]
             function(info, splitted[1])
