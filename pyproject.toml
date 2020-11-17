@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "Python-media-bot"
+name = "Media-bot"
 version = "0.0.1"
-description = "A project for fetching reddit media into a telegram chat."
+description = "A project for fetching media from various sources into a telegram chat."
 authors = ["Arne Beer <contact@arne.beer>"]
 license = "MIT"
 repository = "https://github.com/nukesor/reddit-media-bot"
@@ -14,10 +14,6 @@ requests = "^2"
 beautifulsoup4 = "^4"
 
 telethon = "^1"
-
-SQLAlchemy = "^1"
-sqlalchemy-utils = "^0.36"
-psycopg2-binary = "^2"
 
 toml = "^0"
 youtube_dl = "^2020"

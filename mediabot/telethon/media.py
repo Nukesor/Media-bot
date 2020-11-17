@@ -12,7 +12,7 @@ from mediabot.download import (
     Info,
 )
 from mediabot.config import config
-from mediabot.backup import backup_file
+from mediabot.telethon.files import handle_file_backup, handle_file_upload
 from mediabot.link_handling import (
     info_from_ireddit,
     info_from_imgur,
@@ -115,38 +115,3 @@ async def download_direct_link(event, function):
     except Exception as e:
         log(f"Got exception: {e}")
         raise e
-
-
-async def handle_file_upload(event, info, media):
-    """Telethon file upload related logic."""
-    log("Handle telethon stuff:")
-    log(f"--- Upload: {info.title}")
-    file_handle = await bot.upload_file(media, file_name=f"{info.title}.{info.type}")
-
-    me = await bot.get_me()
-    # Send the file to the chat and replace the message
-    # if the message was send by yourself
-    if event.message.from_id == me.id:
-        log("--- Send to original chat")
-        await bot.send_file(
-            event.message.to_id, file=file_handle, caption=info.title,
-        )
-
-        log("--- Delete original message")
-        await event.message.delete()
-
-    # Send the file to a meme chat if it's specified
-    chat_id, chat_type = get_peer_information(event.message.to_id)
-    meme_chat_id = config["bot"]["meme_chat_id"]
-    if meme_chat_id != "" and meme_chat_id != chat_id:
-        log("--- Send to meme chat")
-        await bot.send_file(
-            meme_chat_id, file=file_handle, caption=info.title,
-        )
-
-
-async def handle_file_backup(event, info, media):
-    """Backup the file to the disk, if config says so."""
-    if config["bot"]["backup"]:
-        log("Backing up media to disk")
-        await backup_file(bot, event.message.from_id, info, media)

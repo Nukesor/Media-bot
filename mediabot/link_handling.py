@@ -8,14 +8,15 @@ def info_from_ireddit(info, url):
     """Populate info object with info from i.redd.it url."""
     log("--- Detected reddit image")
     info.url = url
+    info.type = "image"
     if info.url.endswith(".jpg"):
-        info.type = "jpg"
+        info.extension = "jpg"
     elif info.url.endswith(".png"):
-        info.type = "png"
+        info.extension = "png"
     elif info.url.endswith(".gif"):
-        info.type = "gif"
+        info.extension = "gif"
     elif info.url.endswith(".gifv"):
-        info.type = "gifv"
+        info.extension = "gifv"
 
     return info
 
@@ -24,7 +25,8 @@ def info_from_vreddit(info, url):
     """Populate info object with info from v.redd.it url."""
     log("--- Detected reddit video")
     info.url = url
-    info.type = "mp4"
+    info.type = "video"
+    info.extension = "mp4"
     info.youtube_dl = True
 
     return info
@@ -52,7 +54,8 @@ def info_from_gfycat(info, url):
         return
 
     info.url = url
-    info.type = "mp4"
+    info.type = "video"
+    info.extension = "mp4"
     return info
 
 
@@ -64,7 +67,8 @@ def info_from_giphy(info, url):
     url = url.replace("media2.giphy.com", "i.giphy.com")
     url = url.replace("giphy.gif", "giphy.mp4")
     info.url = url
-    info.type = "mp4"
+    info.type = "video"
+    info.extension = "mp4"
     return info
 
 
@@ -72,7 +76,8 @@ def info_from_youtube(info, url):
     """Populate info object with info from youtube.com url."""
     log("--- Detected youtube")
     info.youtube_dl_url = url
-    info.type = "mp4"
+    info.type = "video"
+    info.extension = "mp4"
     info.youtube_dl = True
     return info
 
@@ -86,16 +91,19 @@ def info_from_imgur(info, url):
         url = url.replace("gifv", "mp4")
         url = url.replace("gif", "mp4")
         info.url = url
-        info.type = "mp4"
+        info.type = "video"
+        info.extension = "mp4"
 
     # Images
     elif url.endswith(".png"):
         log("--- Detected imgur png")
         info.url = url
-        info.type = "png"
+        info.type = "image"
+        info.extension = "png"
     elif url.endswith(".jpg"):
         log("--- Detected imgur jpg")
         info.url = url
-        info.type = "jpg"
+        info.type = "image"
+        info.extension = "jpg"
 
     return info

@@ -11,8 +11,17 @@ default_config = {
         "app_api_id": 0,
         "app_api_hash": "apihash",
     },
-    "bot": {"backup": False, "backup_path": ".", "meme_chat_id": "",},
-    "logging": {"sentry_enabled": False, "sentry_token": "", "debug": False,},
+    "bot": {
+        "backup": False,
+        "backup_path": ".",
+        "meme_chat_id": "",
+        "admin": "nukesor",
+    },
+    "logging": {
+        "sentry_enabled": False,
+        "sentry_token": "",
+        "debug": False,
+    },
 }
 
 config_path = os.path.expanduser("~/.config/reddit_media_bot.toml")
@@ -24,3 +33,8 @@ if not os.path.exists(config_path):
     sys.exit(1)
 else:
     config = toml.load(config_path)
+    # Set default values for any missing keys in the loaded config
+    for key, category in default_config.items():
+        for option, value in category.items():
+            if option not in config[key]:
+                config[key][option] = value
