@@ -55,7 +55,6 @@ async def youtube_clip(event):
 
     try:
         info, media = download_media(info)
-        print("here?")
         await handle_file_backup(event, info, media)
         await handle_file_upload(event, info, media)
     except Exception as e:
