@@ -1,6 +1,6 @@
 from telethon import events
 
-from mediabot import log
+from mediabot import log, get_peer_information
 from mediabot.config import config
 from mediabot.telethon import bot
 from mediabot.download import (
