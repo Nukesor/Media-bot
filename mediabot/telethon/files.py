@@ -17,7 +17,9 @@ async def handle_file_upload(event, info, media):
     )
 
     me = await bot.get_me()
-    from_id, _ = get_peer_information(event.message.from_id)
+    from_id = event.message.from_id
+    if isinstance(from_id, types.PeerUser):
+        from_id, _ = from_id.user_id
 
     # Allow to have a different caption than file title
     if info.caption is not None:
