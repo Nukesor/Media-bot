@@ -5,6 +5,7 @@ import pprint
 import secrets
 import youtube_dl
 from urllib.request import urlopen, Request
+from youtube_dl.utils import sanitize_filename
 
 from mediabot import log
 from mediabot.link_handling import (
@@ -149,6 +150,7 @@ def download_youtube_dl_media(info):
     options = {
         "outtmpl": f"/tmp/{hash}_%(title)s.%(ext)s",
         "quiet": True,
+        "restrictfilenames": True,
     }
     # Try to download the media with youtube-dl
     log(f"--- Downloading via youtube_dl: {info.youtube_dl_url}")
@@ -157,11 +159,7 @@ def download_youtube_dl_media(info):
         yd_info = ydl.extract_info(info.youtube_dl_url)
 
         # Remove invalid chars that are removed from the title by youtube_dl
-        title = yd_info["title"]
-        for invalid_char in ["?"]:
-            title = title.replace("?", "")
-        if info.title is None:
-            info.title = title
+        title = sanitize_filename(yd_info["title"], True)
         info.extension = yd_info["ext"]
 
         path = f"/tmp/{hash}_{title}.{yd_info['ext']}"
@@ -199,6 +197,7 @@ def download_youtube_dl_music(info):
         "outtmpl": f"/tmp/{hash}_%(title)s.%(ext)s",
         "quiet": True,
         "format": "bestaudio",
+        "restrictfilenames": True,
     }
     # Try to download the media with youtube-dl
     log(f"--- Downloading song ia youtube_dl: {info.youtube_dl_url}")
@@ -207,11 +206,7 @@ def download_youtube_dl_music(info):
         yd_info = ydl.extract_info(info.youtube_dl_url)
 
         # Remove invalid chars that are removed from the title by youtube_dl
-        title = yd_info["title"]
-        for invalid_char in ["?"]:
-            title = title.replace("?", "")
-        if info.title is None:
-            info.title = title
+        title = sanitize_filename(yd_info["title"], True)
 
         # Convert the webm to mp3
         temp_path = f"/tmp/{hash}_{title}.{yd_info['ext']}"
