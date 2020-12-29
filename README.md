@@ -1,8 +1,6 @@
 # Reddit media bot
 
 [![MIT Licence](https://img.shields.io/badge/license-MIT-success.svg)](https://github.com/Nukesor/reddit-media-bot/blob/master/LICENSE.md)
-[![Paypal](https://github.com/Nukesor/images/blob/master/paypal-donate-blue.svg)](https://www.paypal.me/arnebeer/)
-[![Patreon](https://github.com/Nukesor/images/blob/master/patreon-donate-blue.svg)](https://www.patreon.com/nukesor)
 
 A telegram user bot which replaces reddit links in messages with the actual media file from the reddit post (video, gif, image).
 
