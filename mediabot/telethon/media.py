@@ -3,7 +3,7 @@ import requests
 from telethon import events
 from datetime import datetime
 
-from mediabot import log, get_peer_information
+from mediabot import log
 from mediabot.telethon import bot
 from mediabot.download import (
     download_media,

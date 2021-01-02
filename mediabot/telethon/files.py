@@ -3,7 +3,7 @@ from datetime import date
 
 from telethon import types
 
-from mediabot import log, get_peer_information
+from mediabot import log, get_peer_information, get_sender_information
 from mediabot.telethon import bot
 from mediabot.config import config
 
@@ -17,7 +17,7 @@ async def handle_file_upload(event, info, media):
     )
 
     me = await bot.get_me()
-    from_id, _ = get_peer_information(event.message.from_id)
+    from_id, _ = get_sender_information(event)
 
     # Allow to have a different caption than file title
     if info.caption is not None:
@@ -55,16 +55,18 @@ async def handle_file_backup(event, info, media):
     """Backup the file to the disk, if config says so."""
     if config["bot"]["backup"]:
         log("Backing up media to disk")
-        await backup_file(bot, event.message.from_id, info, media)
+        await backup_file(bot, event, info, media)
 
 
-async def backup_file(bot, from_id, info, media):
+async def backup_file(bot, event, info, media):
     """Backup the media to a file."""
     # Compile file name
     today = date.today().isoformat()
     file_name = f"{today}_{info.title}.{info.extension}"
 
     log(f"--- File name: {file_name}")
+    from_id, _ = get_sender_information(event)
+    print(from_id)
     # Get username
     user = await bot.get_entity(from_id)
     username = get_username(user)
