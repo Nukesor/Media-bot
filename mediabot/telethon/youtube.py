@@ -46,6 +46,23 @@ async def youtube_music(event):
 )
 async def youtube_clip(event):
     """Set the media chat."""
+    await download_clip(event)
+
+
+@bot.on(
+    events.NewMessage(
+        pattern="\\\\movie",
+        outgoing=True,
+        forwards=False,
+        from_users=config["bot"]["admin"],
+    )
+)
+async def youtube_movie(event):
+    """Set the media chat."""
+    await download_clip(event)
+
+
+async def download_clip(event):
     text = event.message.message
 
     info = Info()
