@@ -15,7 +15,7 @@ default_config = {
         "backup": False,
         "backup_path": ".",
         "meme_chat_id": "",
-        "admin": "nukesor",
+        "admin": "your_nickname_or_telegram_id",
     },
     "logging": {
         "sentry_enabled": False,
