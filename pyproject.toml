@@ -7,7 +7,7 @@ license = "MIT"
 repository = "https://github.com/nukesor/reddit-media-bot"
 
 [tool.poetry.dependencies]
-python = ">=3.6"
+python = ">=3.10, <4"
 raven = "^6"
 alembic = "^1"
 requests = "^2"
