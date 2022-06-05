@@ -3,9 +3,9 @@ import os
 import json
 import pprint
 import secrets
-import youtube_dl
+import yt_dlp
 from urllib.request import urlopen, Request
-from youtube_dl.utils import sanitize_filename
+from yt_dlp.utils import sanitize_filename
 
 from mediabot import log
 from mediabot.link_handling import (
