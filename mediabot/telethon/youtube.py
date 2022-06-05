@@ -26,8 +26,8 @@ async def youtube_music(event):
     info = Info()
     info.type = "audio"
     info.caption = f"Original link: {url}"
-    info.youtube_dl = True
-    info.youtube_dl_url = url
+    info.youtube = True
+    info.youtube_url = url
 
     try:
         info, media = download_media(info)
@@ -67,8 +67,8 @@ async def download_clip(event):
 
     info = Info()
     info.type = "video"
-    info.youtube_dl = True
-    info.youtube_dl_url = text.split(" ")[1]
+    info.youtube = True
+    info.youtube_url = text.split(" ")[1]
 
     try:
         info, media = download_media(info)

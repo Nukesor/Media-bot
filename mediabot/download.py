@@ -30,18 +30,18 @@ class Info:
     extension = None
     caption = None
     title = None
-    youtube_dl = False
-    youtube_dl_url = None
+    youtube = False
+    youtube_url = None
 
     def __init__(self):
-        self.youtube_dl = False
+        self.youtube = False
 
 
 def handle_reddit_web_url(url):
     """Download media from reddit from a given web url."""
     log("\nGet media info from reddit")
     info = Info()
-    info.youtube_dl_url = url
+    info.youtube_url = url
     if not url.endswith(".json"):
         url += ".json"
     info.json_url = url
@@ -114,9 +114,9 @@ def download_media(info):
     # If we are supposed to use youtube-dl, try using it.
     # Videos with sound or youtube videos can be downloaded
     # more easily with youtube-dl
-    if info.type == "video" and info.youtube_dl:
+    if info.type == "video" and info.youtube:
         log("--- Try youtube-dl")
-        info, media = download_youtube_dl_media(info)
+        info, media = download_youtube_media(info)
         # We got some media return it
         if media is not None:
             return info, media
@@ -124,9 +124,9 @@ def download_media(info):
         # If youtube-dl failed, continue and try a direct download
         log("--- youtube-dl failed")
 
-    elif info.type == "audio" and info.youtube_dl:
+    elif info.type == "audio" and info.youtube:
         log("--- Try music download via youtube-dl")
-        info, media = download_youtube_dl_music(info)
+        info, media = download_youtube_music(info)
         # We got some media return it
         if media is not None:
             return info, media
@@ -143,7 +143,7 @@ def download_media(info):
     return info, media
 
 
-def download_youtube_dl_media(info):
+def download_youtube_media(info):
     """Try to download a clip via youtube-dl."""
     random_hash = secrets.token_hex(nbytes=8)
     hash = "reddit_" + random_hash
@@ -153,12 +153,12 @@ def download_youtube_dl_media(info):
         "restrictfilenames": True,
     }
     # Try to download the media with youtube-dl
-    log(f"--- Downloading via youtube_dl: {info.youtube_dl_url}")
+    log(f"--- Downloading via youtube: {info.youtube_url}")
     try:
-        ydl = youtube_dl.YoutubeDL(options)
-        yd_info = ydl.extract_info(info.youtube_dl_url)
+        ydl = yt_dlp.YoutubeDL(options)
+        yd_info = ydl.extract_info(info.youtube_url)
 
-        # Remove invalid chars that are removed from the title by youtube_dl
+        # Remove invalid chars that are removed from the title by youtube
         title = sanitize_filename(yd_info["title"], True)
         info.extension = yd_info["ext"]
 
@@ -189,7 +189,7 @@ def download_youtube_dl_media(info):
         return info, None
 
 
-def download_youtube_dl_music(info):
+def download_youtube_music(info):
     """Try to extract the audio of a clip via youtube-dl."""
     random_hash = secrets.token_hex(nbytes=8)
     hash = "reddit_" + random_hash
@@ -200,12 +200,12 @@ def download_youtube_dl_music(info):
         "restrictfilenames": True,
     }
     # Try to download the media with youtube-dl
-    log(f"--- Downloading song ia youtube_dl: {info.youtube_dl_url}")
+    log(f"--- Downloading song ia youtube: {info.youtube_url}")
     try:
-        ydl = youtube_dl.YoutubeDL(options)
-        yd_info = ydl.extract_info(info.youtube_dl_url)
+        ydl = yt_dlp.YoutubeDL(options)
+        yd_info = ydl.extract_info(info.youtube_url)
 
-        # Remove invalid chars that are removed from the title by youtube_dl
+        # Remove invalid chars that are removed from the title by youtube
         title = sanitize_filename(yd_info["title"], True)
 
         # Convert the webm to mp3

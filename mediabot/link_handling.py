@@ -27,7 +27,7 @@ def info_from_vreddit(info, url):
     info.url = url
     info.type = "video"
     info.extension = "mp4"
-    info.youtube_dl = True
+    info.youtube = True
 
     return info
 
@@ -75,10 +75,10 @@ def info_from_giphy(info, url):
 def info_from_youtube(info, url):
     """Populate info object with info from youtube.com url."""
     log("--- Detected youtube")
-    info.youtube_dl_url = url
+    info.youtube_url = url
     info.type = "video"
     info.extension = "mp4"
-    info.youtube_dl = True
+    info.youtube = True
     return info
 
 
