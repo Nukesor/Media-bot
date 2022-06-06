@@ -11,13 +11,11 @@ from mediabot.download import (
     headers,
     Info,
 )
-from mediabot.config import config
 from mediabot.telethon.files import handle_file_backup, handle_file_upload
 from mediabot.link_handling import (
     info_from_ireddit,
     info_from_imgur,
     info_from_giphy,
-    info_from_youtube,
     info_from_gfycat,
 )
 
@@ -42,12 +40,14 @@ async def replace_reddit_post_link(event):
 async def replace_vreddit_link(event):
     """Handle v.redd.it links."""
     text = event.message.message
-    splitted = text.split("\n")
+    # Remove all empty lines.
+    splitted = list(filter(lambda line: line.strip() != "", text.split("\n")))
+
     if len(splitted) == 1:
         url = splitted[0]
     elif len(splitted) == 2:
         url = splitted[1]
-    elif len(splitted) > 2:
+    else:
         return
 
     response = requests.get(url, headers=headers, allow_redirects=False)
