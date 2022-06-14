@@ -3,6 +3,8 @@ import os
 import json
 import pprint
 import secrets
+import string
+import random
 import yt_dlp
 from urllib.request import urlopen, Request
 from yt_dlp.utils import sanitize_filename
@@ -139,6 +141,37 @@ def download_media(info):
     request = Request(info.url, headers=headers)
     response = urlopen(request)
     media = response.read()
+
+    # Convert GIFs to mp4.
+    if info.extension == "gif":
+        log(f"--- Found GIF. Convert to mp4")
+        temp_dir = "/tmp/redditbot/"
+        os.mkdir(temp_dir)
+        source_file = (
+            temp_dir
+            + "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+            + ".gif"
+        )
+        target_file = (
+            temp_dir
+            + "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+            + ".mp4"
+        )
+        # Write the file to disk so we can work on it with ffmpeg.
+        with open(source_file, "wb") as file:
+            file.write(media)
+
+        # Convert it to mp4
+        os.system(
+            f'ffmpeg -i {source_file} -movflags faststart -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" {target_file}'
+        )
+
+        # Read converted file
+        with open(target_file, "rb") as file:
+            media = file.read()
+
+        os.remove(target_file)
+        info.extension = "mp4"
 
     return info, media
 
