@@ -146,7 +146,10 @@ def download_media(info):
     if info.extension == "gif":
         log(f"--- Found GIF. Convert to mp4")
         temp_dir = "/tmp/redditbot/"
-        os.mkdir(temp_dir)
+
+        if not os.path.exists(temp_dir):
+            os.mkdir(temp_dir)
+
         source_file = (
             temp_dir
             + "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
