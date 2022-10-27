@@ -8,7 +8,9 @@ setup:
 
 lint:
     poetry run black --check mediabot
-    poetry run isort --check-only mediabot
+    poetry run isort \
+        --skip __init__.py \
+    --check-only mediabot
     poetry run flake8 \
         --per-file-ignore=mediabot/telethon/media.py:W605 \
         mediabot
@@ -18,9 +20,11 @@ format:
     poetry run autoflake \
         --remove-all-unused-imports \
         --recursive \
+        --exclude=__init__.py,.venv \
         --in-place mediabot
     poetry run black mediabot
-    poetry run isort mediabot
+    poetry run isort mediabot \
+        --skip __init__.py
 
 
 # Watch for something

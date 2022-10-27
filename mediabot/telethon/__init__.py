@@ -3,6 +3,7 @@ from telethon import TelegramClient
 
 from mediabot.config import config
 
+
 bot = TelegramClient(
     "reddit_media_bot",
     config["telegram"]["app_api_id"],
@@ -11,3 +12,7 @@ bot = TelegramClient(
 
 
 # Reexport for easy bot initialization
+from .management import *
+from .media import *
+from .youtube import *
+from .files import *
