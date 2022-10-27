@@ -1,22 +1,23 @@
 """Media download and download info extraction logic."""
-import os
 import json
+import os
 import pprint
+import random
 import secrets
 import string
-import random
+from urllib.request import Request, urlopen
+
 import yt_dlp
-from urllib.request import urlopen, Request
 from yt_dlp.utils import sanitize_filename
 
 from mediabot import log
 from mediabot.link_handling import (
-    info_from_vreddit,
-    info_from_ireddit,
     info_from_gfycat,
     info_from_giphy,
-    info_from_youtube,
     info_from_imgur,
+    info_from_ireddit,
+    info_from_vreddit,
+    info_from_youtube,
 )
 
 headers = {

@@ -2,9 +2,9 @@
 import toml
 from telethon import events
 
-from mediabot.telethon import bot
+from mediabot import get_peer_information, log
 from mediabot.config import config, config_path
-from mediabot import log, get_peer_information
+from mediabot.telethon import bot
 
 
 @bot.on(

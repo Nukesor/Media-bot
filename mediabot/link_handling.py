@@ -1,6 +1,7 @@
 """Media url link handling logic."""
 import requests
 from bs4 import BeautifulSoup
+
 from mediabot import log
 
 

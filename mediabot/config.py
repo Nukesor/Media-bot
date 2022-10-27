@@ -1,6 +1,7 @@
 """Config values for pollbot."""
 import os
 import sys
+
 import toml
 
 default_config = {

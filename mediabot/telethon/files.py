@@ -1,11 +1,9 @@
 import os
 from datetime import date
 
-from telethon import types
-
-from mediabot import log, get_peer_information, get_sender_information
-from mediabot.telethon import bot
+from mediabot import get_peer_information, get_sender_information, log
 from mediabot.config import config
+from mediabot.telethon import bot
 
 
 async def handle_file_upload(event, info, media):
