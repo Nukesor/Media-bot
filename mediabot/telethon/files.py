@@ -1,11 +1,9 @@
 import os
 from datetime import date
 
-from telethon import types
-
-from mediabot import log, get_peer_information, get_sender_information
-from mediabot.telethon import bot
+from mediabot import get_peer_information, get_sender_information, log
 from mediabot.config import config
+from mediabot.telethon import bot
 
 
 async def handle_file_upload(event, info, media):
@@ -81,7 +79,7 @@ async def backup_file(bot, event, info, media):
     # Write to disk
     with open(file_path, "wb") as media_file:
         media_file.write(media)
-    log(f"--- Saved to disk!")
+    log("--- Saved to disk!")
 
 
 def get_username(user):

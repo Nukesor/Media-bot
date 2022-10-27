@@ -1,23 +1,18 @@
 """Download and message replace logic."""
+
 import requests
 from telethon import events
-from datetime import datetime
 
 from mediabot import log
-from mediabot.telethon import bot
-from mediabot.download import (
-    download_media,
-    handle_reddit_web_url,
-    headers,
-    Info,
-)
-from mediabot.telethon.files import handle_file_backup, handle_file_upload
+from mediabot.download import Info, download_media, handle_reddit_web_url, headers
 from mediabot.link_handling import (
-    info_from_ireddit,
-    info_from_imgur,
-    info_from_giphy,
     info_from_gfycat,
+    info_from_giphy,
+    info_from_imgur,
+    info_from_ireddit,
 )
+from mediabot.telethon import bot
+from mediabot.telethon.files import handle_file_backup, handle_file_upload
 
 
 @bot.on(events.NewMessage(pattern=".*reddit\.com.*"))
@@ -33,7 +28,6 @@ async def replace_reddit_post_link(event):
 
     except Exception as e:
         log(f"Got exception: {e}")
-        pass
 
 
 @bot.on(events.NewMessage(pattern="(?s).*v\.redd\.it.*"))
@@ -64,7 +58,6 @@ async def replace_vreddit_link(event):
 
     except Exception as e:
         log(f"Got exception: {e}")
-        pass
 
 
 @bot.on(events.NewMessage(pattern="(?s).*i\.redd\.it.*"))
@@ -101,7 +94,6 @@ async def download_direct_link(event, function):
         splitted = text.split("\n")
         if len(splitted) == 1:
             function(info, splitted[0])
-            now = datetime.now()
             info.title = None
         elif len(splitted) == 2:
             info.title = splitted[0]

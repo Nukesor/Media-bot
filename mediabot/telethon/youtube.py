@@ -2,12 +2,9 @@ from telethon import events
 
 from mediabot import log
 from mediabot.config import config
+from mediabot.download import Info, download_media
 from mediabot.telethon import bot
-from mediabot.download import (
-    download_media,
-    Info,
-)
-from mediabot.telethon.files import handle_file_upload, handle_file_backup
+from mediabot.telethon.files import handle_file_backup, handle_file_upload
 
 
 @bot.on(

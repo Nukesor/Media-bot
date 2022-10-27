@@ -2,9 +2,9 @@
 import toml
 from telethon import events
 
-from mediabot.telethon import bot
+from mediabot import get_peer_information, log
 from mediabot.config import config, config_path
-from mediabot import log, get_peer_information
+from mediabot.telethon import bot
 
 
 @bot.on(
@@ -46,6 +46,6 @@ async def delete_media_chat(event):
         with open(config_path, "w") as file_descriptor:
             toml.dump(config, file_descriptor)
 
-        await event.respond(f"Media chat unset")
+        await event.respond("Media chat unset")
     except Exception as e:
         log(f"Got exception: {e}")
