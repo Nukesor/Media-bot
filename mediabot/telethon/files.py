@@ -79,7 +79,7 @@ async def backup_file(bot, event, info, media):
     # Write to disk
     with open(file_path, "wb") as media_file:
         media_file.write(media)
-    log(f"--- Saved to disk!")
+    log("--- Saved to disk!")
 
 
 def get_username(user):

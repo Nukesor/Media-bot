@@ -1,5 +1,4 @@
 """Download and message replace logic."""
-from datetime import datetime
 
 import requests
 from telethon import events
@@ -95,7 +94,6 @@ async def download_direct_link(event, function):
         splitted = text.split("\n")
         if len(splitted) == 1:
             function(info, splitted[0])
-            now = datetime.now()
             info.title = None
         elif len(splitted) == 2:
             info.title = splitted[0]

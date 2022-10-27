@@ -9,7 +9,9 @@ setup:
 lint:
     poetry run black --check mediabot
     poetry run isort --check-only mediabot
-    poetry run flake8 mediabot
+    poetry run flake8 \
+        --per-file-ignore=mediabot/telethon/media.py:W605 \
+        mediabot
 
 format:
     # remove unused imports

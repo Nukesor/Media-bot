@@ -46,6 +46,6 @@ async def delete_media_chat(event):
         with open(config_path, "w") as file_descriptor:
             toml.dump(config, file_descriptor)
 
-        await event.respond(f"Media chat unset")
+        await event.respond("Media chat unset")
     except Exception as e:
         log(f"Got exception: {e}")

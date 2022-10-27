@@ -108,7 +108,7 @@ def get_media_info(payload, info):
     elif data["domain"] in ["i.imgur.com", "imgur.com"]:
         return info_from_imgur(info, data["url"])
 
-    log(f"--- Failed to detect media type")
+    log("--- Failed to detect media type")
     return None
 
 
@@ -145,7 +145,7 @@ def download_media(info):
 
     # Convert GIFs to mp4.
     if info.extension == "gif":
-        log(f"--- Found GIF. Convert to mp4")
+        log("--- Found GIF. Convert to mp4")
         temp_dir = "/tmp/redditbot/"
 
         if not os.path.exists(temp_dir):
