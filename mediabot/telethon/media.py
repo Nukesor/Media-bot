@@ -1,10 +1,9 @@
 """Download and message replace logic."""
 
-import requests
 from telethon import events
 
 from mediabot import log
-from mediabot.download import Info, download_media, handle_reddit_web_url, headers
+from mediabot.download import Info, download_media, handle_reddit_web_url
 from mediabot.link_handling import (
     info_from_gfycat,
     info_from_giphy,
@@ -44,18 +43,15 @@ async def replace_vreddit_link(event):
     else:
         return
 
-    response = requests.get(url, headers=headers, allow_redirects=False)
-    url = response.headers["Location"]
-    response = requests.get(url, headers=headers, allow_redirects=False)
-    url = response.headers["Location"]
+    info = Info()
+    info.type = "video"
+    info.youtube = True
+    info.youtube_url = url
 
     try:
-        info, media = handle_reddit_web_url(url)
-        if info is None or media is None:
-            return
+        info, media = download_media(info)
         await handle_file_backup(event, info, media)
         await handle_file_upload(event, info, media)
-
     except Exception as e:
         log(f"Got exception: {e}")
 
