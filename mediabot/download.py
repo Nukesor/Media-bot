@@ -21,7 +21,9 @@ from mediabot.link_handling import (
 )
 
 headers = {
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0",
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64; rv:68.0)" + "Gecko/20100101 Firefox/68.0"
+    ),
 }
 
 
@@ -167,7 +169,9 @@ def download_media(info):
 
         # Convert it to mp4
         os.system(
-            f'ffmpeg -i {source_file} -movflags faststart -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" {target_file}'
+            f"ffmpeg -i {source_file}"
+            + " -movflags faststart"
+            + f' -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" {target_file}'
         )
 
         # Read converted file
