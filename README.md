@@ -8,7 +8,6 @@ For instance, when sending a link to a reddit post with a video, the bot will do
 
 ## Features
 
-- Backup memes to a folder on your server
 - Support for messages shared via BaconReader
 - Support for other meme source links:
   - Imgur
@@ -83,7 +82,7 @@ The following are example urls that can be used to debug all possible medias.
 
 - https://imgur.com/A5FfVJU.gifv
 
-#### gyfcat.com 
+#### gyfcat.com
 
 - https://gfycat.com/scientificinfatuatedbittern
 

@@ -7,24 +7,12 @@ setup:
     poetry install
 
 lint:
-    poetry run black --check mediabot
-    poetry run isort \
-        --skip __init__.py \
-    --check-only mediabot
-    poetry run flake8 \
-        --per-file-ignore=mediabot/telethon/media.py:W605 \
-        mediabot
+    poetry run ruff check ./mediabot --output-format=full
+    poetry run ruff format ./mediabot --diff
 
 format:
-    # remove unused imports
-    poetry run autoflake \
-        --remove-all-unused-imports \
-        --recursive \
-        --exclude=__init__.py,.venv \
-        --in-place mediabot
-    poetry run black mediabot
-    poetry run isort mediabot \
-        --skip __init__.py
+    poetry run ruff check --fix ./mediabot
+    poetry run ruff format ./mediabot
 
 
 # Watch for something
