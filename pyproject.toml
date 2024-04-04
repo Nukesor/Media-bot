@@ -14,8 +14,8 @@ raven = "^6"
 requests = "^2"
 telethon = "^1"
 toml = "^0"
-typer = "^0.6"
-yt-dlp = "^2022.5.18"
+typer = "^0.12"
+yt-dlp = "^2024"
 
 [tool.poetry.dev-dependencies]
 autoflake = "^1"
