@@ -29,7 +29,7 @@ build-backend = "poetry.masonry.api"
 # General docs: https://docs.astral.sh/ruff/configuration/
 # Explicit docs for individual settings: https://docs.astral.sh/ruff/settings/
 [tool.ruff]
-line-length = 88
+line-length = 100
 indent-width = 4
 target-version = "py311"
 exclude = [

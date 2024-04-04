@@ -1,18 +1,17 @@
 import os
-from datetime import date
+from telethon.events import NewMessage
 
 from mediabot import get_peer_information, get_sender_information, log
 from mediabot.config import config
+from mediabot.media_info import Info
 from mediabot.telethon import bot
 
 
-async def handle_file_upload(event, info, media):
+async def handle_file_upload(event: NewMessage.Event, info: Info, media: bytes):
     """Telethon file upload related logic."""
     log("Handle telethon stuff:")
     log(f"--- Upload: {info.title}")
-    file_handle = await bot.upload_file(
-        media, file_name=f"{info.title}.{info.extension}"
-    )
+    file_handle = await bot.upload_file(media, file_name=info.file_name())
 
     me = await bot.get_me()
     from_id, _ = get_sender_information(event)
@@ -37,7 +36,7 @@ async def handle_file_upload(event, info, media):
         await event.message.delete()
 
     # Send the file to a meme chat if it's specified
-    chat_id, chat_type = get_peer_information(event.message.to_id)
+    chat_id, _ = get_peer_information(event.message.to_id)
     meme_chat_id = config["bot"]["meme_chat_id"]
 
     if meme_chat_id != "" and meme_chat_id != chat_id:
@@ -49,22 +48,21 @@ async def handle_file_upload(event, info, media):
         )
 
 
-async def handle_file_backup(event, info, media):
+async def handle_file_backup(event: NewMessage.Event, info: Info, media: bytes):
     """Backup the file to the disk, if config says so."""
     if config["bot"]["backup"]:
         log("Backing up media to disk")
-        await backup_file(bot, event, info, media)
+        await backup_file(event, info, media)
 
 
-async def backup_file(bot, event, info, media):
+async def backup_file(event: NewMessage.Event, info: Info, media: bytes):
     """Backup the media to a file."""
     # Compile file name
-    today = date.today().isoformat()
-    file_name = f"{today}_{info.title}.{info.extension}"
+    file_name = info.file_name_with_date()
 
     log(f"--- File name: {file_name}")
     from_id, _ = get_sender_information(event)
-    print(from_id)
+
     # Get username
     user = await bot.get_entity(from_id)
     username = get_username(user)

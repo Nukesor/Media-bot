@@ -1,6 +1,7 @@
 """Bot management logic."""
 import toml
-from telethon import events
+from telethon.events import NewMessage
+from telethon.events import NewMessage
 
 from mediabot import get_peer_information, log
 from mediabot.config import config, config_path
@@ -8,17 +9,17 @@ from mediabot.telethon import bot
 
 
 @bot.on(
-    events.NewMessage(
+    NewMessage(
         pattern="memesplease",
         outgoing=True,
         forwards=False,
         from_users=config["bot"]["admin"],
     )
 )
-async def set_media_chat(event):
+async def set_media_chat(event: NewMessage.Event):
     """Set the media chat."""
     try:
-        chat_id, peer_type = get_peer_information(event.message.to_id)
+        chat_id, _ = get_peer_information(event.message.to_id)
         log(f"Setting media chat: {chat_id}")
         config["bot"]["meme_chat_id"] = chat_id
 
@@ -31,14 +32,14 @@ async def set_media_chat(event):
 
 
 @bot.on(
-    events.NewMessage(
+    NewMessage(
         pattern="memestop",
         outgoing=True,
         forwards=False,
         from_users=config["bot"]["admin"],
     )
 )
-async def delete_media_chat(event):
+async def delete_media_chat(event: NewMessage.Event):
     """Delete the current media chat id."""
     try:
         config["bot"]["meme_chat_id"] = ""
