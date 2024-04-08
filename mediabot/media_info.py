@@ -12,6 +12,7 @@ class Source(Enum):
     """Defines from which the media is downloaded from."""
 
     Youtube = 0
+    Reddit = 1
 
 
 class TargetFormat(Enum):

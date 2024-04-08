@@ -14,4 +14,5 @@ bot = TelegramClient(
 # Reexport for easy bot initialization
 from .management import *
 from .youtube import *
+from .reddit import *
 from .files import *

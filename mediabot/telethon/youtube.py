@@ -8,7 +8,7 @@ from mediabot.telethon import bot
 
 @bot.on(
     NewMessage(
-        pattern="\\\\music",
+        pattern="\\\\a",
         outgoing=True,
         forwards=False,
         from_users=config["bot"]["admin"],
@@ -21,7 +21,7 @@ async def youtube_music(event: NewMessage.Event):
 
 @bot.on(
     NewMessage(
-        pattern="\\\\clip",
+        pattern="\\\\c",
         outgoing=True,
         forwards=False,
         from_users=config["bot"]["admin"],
@@ -34,7 +34,7 @@ async def youtube_clip(event: NewMessage.Event):
 
 @bot.on(
     NewMessage(
-        pattern="\\\\movie",
+        pattern="\\\\m",
         outgoing=True,
         forwards=False,
         from_users=config["bot"]["admin"],
