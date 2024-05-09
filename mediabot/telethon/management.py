@@ -1,6 +1,6 @@
 """Bot management logic."""
+
 import toml
-from telethon.events import NewMessage
 from telethon.events import NewMessage
 
 from mediabot import get_peer_information, log

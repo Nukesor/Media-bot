@@ -1,7 +1,8 @@
 """Media url link handling logic."""
+
 import os
-import subprocess
 import secrets
+import subprocess
 
 import yt_dlp
 from yt_dlp.utils import sanitize_filename

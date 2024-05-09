@@ -1,4 +1,5 @@
 import os
+
 from telethon.events import NewMessage
 
 from mediabot import get_peer_information, get_sender_information, log

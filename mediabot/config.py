@@ -1,4 +1,5 @@
 """Config values for pollbot."""
+
 import os
 import sys
 
