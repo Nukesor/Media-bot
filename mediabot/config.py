@@ -25,12 +25,12 @@ default_config = {
     },
 }
 
-config_path = os.path.expanduser("~/.config/reddit_media_bot.toml")
+config_path = os.path.expanduser("~/.config/media_bot.toml")
 
 if not os.path.exists(config_path):
     with open(config_path, "w") as file_descriptor:
         toml.dump(default_config, file_descriptor)
-    print("Please adjust the configuration file at '~/.config/reddit_media_bot.toml'")
+    print("Please adjust the configuration file at '~/.config/media_bot.toml'")
     sys.exit(1)
 else:
     config = toml.load(config_path)
