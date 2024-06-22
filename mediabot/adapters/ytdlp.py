@@ -11,7 +11,7 @@ from mediabot import log
 from mediabot.media_info import Adapter, Info, TargetFormat
 
 
-def download_media(info) -> tuple[Info, bytes]:
+def download_media(info: Info) -> tuple[Info, bytes]:
     """Download media via yt-dlp based on the given info.
 
     yt-dlp can handle both video and audio.
@@ -22,7 +22,7 @@ def download_media(info) -> tuple[Info, bytes]:
         )
 
     if info.target_format == TargetFormat.Mp4 or info.target_format == TargetFormat.Webm:
-        log("--- Download video via yt-dlp")
+        log(f"--- Download video via yt-dlp: \n    {info.url}")
         media = download_youtube_media(info)
         return info, media
 
