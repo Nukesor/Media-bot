@@ -1,6 +1,7 @@
 import os
 
 from telethon.events import NewMessage
+from telethon import types
 
 from mediabot import get_peer_information, get_sender_information, log
 from mediabot.config import config
@@ -41,9 +42,10 @@ async def handle_file_upload(event: NewMessage.Event, info: Info, media: bytes):
     meme_chat_id = config["bot"]["meme_chat_id"]
 
     if meme_chat_id != "" and meme_chat_id != chat_id:
-        log("--- Send to meme chat")
+        log("--- Send media to meme chat")
+        meme_chat = await bot.get_entity(types.PeerChat(meme_chat_id))
         await bot.send_file(
-            meme_chat_id,
+            meme_chat,
             file=file_handle,
             caption=caption,
         )

@@ -15,5 +15,5 @@ async def handle(event: NewMessage.Event, url: str, target_format: TargetFormat)
         await handle_file_backup(event, info, media)
         await handle_file_upload(event, info, media)
     except Exception as e:
-        log(f"Failed to download media. Got exception: {e}")
+        log(f"Failed to handle reddit link. Got exception: {e}")
     pass
