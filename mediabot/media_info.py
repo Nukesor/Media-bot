@@ -13,6 +13,7 @@ class Source(Enum):
 
     Youtube = 0
     Reddit = 1
+    Imgur = 2
 
 
 class TargetFormat(Enum):
