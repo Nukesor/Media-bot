@@ -8,13 +8,13 @@ from mediabot.telethon import bot
 
 @bot.on(
     NewMessage(
-        pattern=".*reddit\\.com.*",
+        pattern=".*reddit\\.com.*|.*v\\.redd\\.it.*",
         outgoing=True,
         forwards=False,
         from_users=config["bot"]["admin"],
     )
 )
-async def explicit_reddit_clip(event: NewMessage.Event):
+async def reddit_link(event: NewMessage.Event):
     """Set the media chat."""
     await reddit.handle(event, event.message.message, TargetFormat.Mp4)
 
@@ -27,7 +27,7 @@ async def explicit_reddit_clip(event: NewMessage.Event):
         from_users=config["bot"]["admin"],
     )
 )
-async def generic_reddit(event: NewMessage.Event):
+async def explicit_reddit_link(event: NewMessage.Event):
     """Set the media chat."""
     text = event.message.message
     url = text.split(" ")[1]
