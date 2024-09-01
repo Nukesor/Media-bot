@@ -2,9 +2,9 @@ from telethon.events import NewMessage
 
 from mediabot.config import config
 from mediabot.handlers import reddit
+from mediabot.helper import url_from_text
 from mediabot.media_info import TargetFormat
 from mediabot.telethon import bot
-from mediabot.helper import url_from_text
 
 
 @bot.on(
