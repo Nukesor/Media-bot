@@ -20,7 +20,7 @@ yt-dlp = "^2024"
 validators = "^0.34"
 
 [tool.poetry.dev-dependencies]
-ruff = "^0.6"
+ruff = "^0.7"
 types-toml = "^0.10"
 
 [build-system]
