@@ -9,10 +9,6 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.12, <4"
-alembic = "^1"
-beautifulsoup4 = "^4"
-raven = "^6"
-requests = "^2"
 telethon = "^1"
 toml = "^0"
 typer = "^0.14"
@@ -34,25 +30,22 @@ build-backend = "poetry.masonry.api"
 line-length = 100
 indent-width = 4
 target-version = "py311"
-exclude = [
-    ".venv",
-    "__init__.py",
-]
+exclude = [".venv", "__init__.py"]
 
 [tool.ruff.lint]
 select = [
-    "E", # Pycodestyle
-    "F", # Pyflakes
-    "I", # Isort
-    "UP", # Language feature updates
-    "RUF", # Ruff Rules
+  "E",   # Pycodestyle
+  "F",   # Pyflakes
+  "I",   # Isort
+  "UP",  # Language feature updates
+  "RUF", # Ruff Rules
 ]
 fixable = [
-    "E",
-    "F",
-    "I",
-    "UP", # Language feature updates
-    "RUF", # Ruff Rules
+  "E",
+  "F",
+  "I",
+  "UP",  # Language feature updates
+  "RUF", # Ruff Rules
 ]
 
 # 4. Ignore `E402` (import violations) in all `__init__.py` and misc files.
