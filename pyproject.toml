@@ -15,12 +15,12 @@ raven = "^6"
 requests = "^2"
 telethon = "^1"
 toml = "^0"
-typer = "^0.12"
+typer = "^0.14"
 yt-dlp = "^2024"
 validators = "^0.34"
 
 [tool.poetry.dev-dependencies]
-ruff = "^0.7"
+ruff = "^0.8"
 types-toml = "^0.10"
 
 [build-system]
