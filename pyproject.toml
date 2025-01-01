@@ -11,7 +11,7 @@ package-mode = false
 python = ">=3.12, <4"
 telethon = "^1"
 toml = "^0"
-typer = "^0.14"
+typer = "^0.15"
 yt-dlp = "^2024"
 validators = "^0.34"
 
