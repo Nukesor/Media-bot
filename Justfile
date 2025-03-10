@@ -1,18 +1,20 @@
 default: run
 
 run:
-    poetry run python main.py run
+    uv run main.py run
 
 setup:
-    poetry install
+    uv sync
 
 lint:
-    poetry run ruff check ./mediabot --output-format=full
-    poetry run ruff format ./mediabot --diff
+    uv run ruff check ./mediabot --output-format=full
+    uv run ruff format ./mediabot --diff
+    taplo format --check
 
 format:
-    poetry run ruff check --fix ./mediabot
-    poetry run ruff format ./mediabot
+    uv run ruff check --fix ./mediabot
+    uv run ruff format ./mediabot
+    taplo format
 
 
 # Watch for something

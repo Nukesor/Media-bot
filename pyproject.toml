@@ -1,51 +1,47 @@
-[tool.poetry]
-name = "Media-bot"
-version = "0.0.1"
+[project]
+authors = [{ name = "Arne Beer", email = "contact@arne.beer" }]
+dependencies = [
+    "telethon>=1",
+    "toml>=0",
+    "typer>=0.15",
+    "validators>=0.34",
+    "yt-dlp>=2025",
+]
 description = "A project for fetching media from various sources into a telegram chat."
-authors = ["Arne Beer <contact@arne.beer>"]
-license = "MIT"
-repository = "https://github.com/nukesor/reddit-media-bot"
-package-mode = false
+license = "MIT OR Apache-2.0"
+name = "Media-bot"
+requires-python = ">=3.13"
+version = "0.0.1"
 
-[tool.poetry.dependencies]
-python = ">=3.12, <4"
-telethon = "^1"
-toml = "^0"
-typer = "^0.15"
-yt-dlp = "^2025"
-validators = "^0.34"
+[project.urls]
+Repository = "https://github.com/nukesor/reddit-media-bot"
 
-[tool.poetry.dev-dependencies]
-ruff = "^0.9"
-types-toml = "^0.10"
-
-[build-system]
-requires = ["poetry"]
-build-backend = "poetry.masonry.api"
+[tool.uv]
+dev-dependencies = ["ruff>=0.9", "types-toml>=0.10"]
 
 # Check the Ruff documentation for more info on how to configure this
 # General docs: https://docs.astral.sh/ruff/configuration/
 # Explicit docs for individual settings: https://docs.astral.sh/ruff/settings/
 [tool.ruff]
-line-length = 100
-indent-width = 4
-target-version = "py311"
 exclude = [".venv", "__init__.py"]
+indent-width = 4
+line-length = 100
+target-version = "py311"
 
 [tool.ruff.lint]
-select = [
-  "E",   # Pycodestyle
-  "F",   # Pyflakes
-  "I",   # Isort
-  "UP",  # Language feature updates
-  "RUF", # Ruff Rules
-]
 fixable = [
-  "E",
-  "F",
-  "I",
-  "UP",  # Language feature updates
-  "RUF", # Ruff Rules
+    "E",
+    "F",
+    "I",
+    "RUF", # Ruff Rules
+    "UP",  # Language feature updates
+]
+select = [
+    "E",   # Pycodestyle
+    "F",   # Pyflakes
+    "I",   # Isort
+    "RUF", # Ruff Rules
+    "UP",  # Language feature updates
 ]
 
 # 4. Ignore `E402` (import violations) in all `__init__.py` and misc files.
@@ -53,9 +49,9 @@ fixable = [
 "__init__.py" = ["E402"]
 
 [tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-skip-magic-trailing-comma = false
-line-ending = "auto"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+skip-magic-trailing-comma = false
